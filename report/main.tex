@@ -1,0 +1,2076 @@
+% =====================================================================
+%  StudyMate AI -- Software Development and Project Management Lab Report
+%  Course   : CSE474.3 | Section 3 | Faculty: Dr. Rakib Ahmed Saleh
+%  Team     : Abdullah Al Fahad (2023100000289)
+%             Sanjit Sharif      (2023100000308)
+% =====================================================================
+\documentclass[12pt,a4paper]{report}
+
+% ---------------- core packages --------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[top=2.5cm,bottom=2.5cm,left=3cm,right=2.5cm,headheight=15pt]{geometry}
+\usepackage{setspace}
+\usepackage[table]{xcolor}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{multicol}
+
+% ---------------- TikZ / diagrams ------------------------------------
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,arrows,positioning,calc,fit,backgrounds,decorations.pathreplacing,chains}
+\usepackage{pgfgantt}
+
+% ---------------- hyperlinking (kept subtle) --------------------------
+\usepackage[colorlinks=true,linkcolor=linkblue,urlcolor=linkblue,citecolor=linkblue,plainpages=false,pdfpagelabels]{hyperref}
+
+% ---------------- palette ---------------------------------------------
+\definecolor{appbg}{HTML}{0B0F19}       % app background
+\definecolor{appcard}{HTML}{151B2B}     % app card surface
+\definecolor{appcyan}{HTML}{38BDF8}     % primary accent
+\definecolor{apppurple}{HTML}{A855F7}   % secondary accent
+\definecolor{apppink}{HTML}{EC4899}     % tertiary accent
+\definecolor{appgreen}{HTML}{34D399}    % success
+\definecolor{appamber}{HTML}{F59E0B}    % warning
+\definecolor{appred}{HTML}{F87171}      % danger
+\definecolor{deepblue}{HTML}{1E3A8A}
+\definecolor{linkblue}{HTML}{1D4ED8}
+\definecolor{codebg}{HTML}{F1F5F9}
+\definecolor{codeframe}{HTML}{CBD5E1}
+\definecolor{keyblue}{HTML}{1D4ED8}
+\definecolor{stringgreen}{HTML}{15803D}
+\definecolor{commentgray}{HTML}{64748B}
+\definecolor{tablehead}{HTML}{E0F2FE}
+\definecolor{tablerow}{HTML}{F8FAFC}
+\definecolor{riskhigh}{HTML}{FCA5A5}
+\definecolor{riskmed}{HTML}{FDE68A}
+\definecolor{risklow}{HTML}{BBF7D0}
+\definecolor{critical}{HTML}{DC2626}
+
+% ---------------- headings --------------------------------------------
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\Large}
+  {\color{deepblue}\chaptertitlename\ \thechapter}{12pt}{\Huge\color{deepblue}}
+\titlespacing*{\chapter}{0pt}{-20pt}{18pt}
+\titleformat{\section}{\normalfont\Large\bfseries\color{deepblue}}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries\color{appbg}}{\thesubsection}{0.8em}{}
+
+% ---------------- header / footer -------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape StudyMate AI --- Project Report}
+\fancyhead[R]{\small\itshape\nouppercase{\leftmark}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---------------- captions ---------------------------------------------
+\captionsetup{font=small,labelfont={bf,color=deepblue},skip=6pt}
+
+% ---------------- listings ---------------------------------------------
+\lstdefinestyle{js}{
+  morestring=[b]",
+  morestring=[b]',
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{keyblue}\bfseries,
+  stringstyle=\color{stringgreen},
+  commentstyle=\color{commentgray}\itshape,
+  backgroundcolor=\color{codebg},
+  frame=single,rulecolor=\color{codeframe},
+  numbers=left,numberstyle=\tiny\color{commentgray},numbersep=8pt,
+  breaklines=true,breakatwhitespace=true,
+  showstringspaces=false,columns=flexible,
+  morekeywords={const,let,var,async,await,require,return,if,else,for,of,try,catch,throw,new,function,switch,case,break,typeof,null,undefined,true,false,this},
+  xleftmargin=18pt,xrightmargin=6pt,framexleftmargin=18pt,
+}
+\lstdefinestyle{ts}{
+  style=js,
+  morekeywords={type,interface,export,import,from,as,function,useState,useEffect},
+}
+\lstset{style=js}
+
+\emergencystretch=2em
+
+% ---------------- useful macros ----------------------------------------
+\newcommand{\frref}[1]{\textbf{#1}}
+\newcommand{\appname}{\textsc{StudyMate AI}}
+
+% Screenshot slot: if screenshots/#1 exists (e.g. on Overleaf) it is embedded,
+% otherwise a labelled placeholder showing the expected file name is drawn.
+\newcommand{\screenshot}[3]{%
+  \begin{figure}[H]
+    \centering
+    \IfFileExists{screenshots/#1}{%
+      \includegraphics[height=12.5cm,keepaspectratio]{screenshots/#1}%
+    }{%
+      \begin{tikzpicture}
+        \node[draw=commentgray,thick,dashed,rounded corners=8pt,
+              minimum width=7.0cm,minimum height=12.5cm,align=center,
+              font=\small\itshape,text=commentgray]
+          {Real screenshot\\goes here\\[6pt]file:\\\texttt{screenshots/\detokenize{#1}}};
+      \end{tikzpicture}%
+    }%
+    \caption[#2]{#2 \ (screenshot file: \texttt{screenshots/\detokenize{#1}})}\label{#3}
+  \end{figure}}
+
+% =====================================================================
+\begin{document}
+
+\pagenumbering{roman}
+
+% ======================================================================
+% inlined from sections/cover.tex
+% ======================================================================
+% =====================================================================
+%  COVER PAGE
+% =====================================================================
+\begin{titlepage}
+\centering
+\begin{tikzpicture}[remember picture,overlay]
+  % Top decorative band
+  \fill[deepblue] (current page.north west) rectangle ($(current page.north east)+(0,-2.2)$);
+  \fill[appcyan] ($(current page.north west)+(0,-2.2)$) rectangle ($(current page.north east)+(0,-2.35)$);
+  % Bottom band
+  \fill[deepblue] ($(current page.south west)+(0,1.6)$) rectangle (current page.south east);
+  \fill[appcyan] ($(current page.south west)+(0,1.6)$) rectangle ($(current page.south east)+(0,1.75)$);
+  % Subtle accent circles
+  \fill[appcyan,opacity=0.25] ($(current page.north east)+(-1.4,-1.1)$) circle (0.55);
+  \fill[apppurple,opacity=0.35] ($(current page.north east)+(-2.6,-0.9)$) circle (0.32);
+  \fill[apppink,opacity=0.35] ($(current page.north west)+(2.2,-1.2)$) circle (0.4);
+\end{tikzpicture}
+
+\vspace*{1.6cm}
+
+% ---- App logo (drawn) ------------------------------------------------
+\begin{tikzpicture}
+  \fill[deepblue,rounded corners=14pt] (0,0) rectangle (2.6,2.6);
+  \fill[appcyan,rounded corners=10pt] (0.28,0.28) rectangle (2.32,2.32);
+  \draw[white,line width=2.2pt,line cap=round] (0.75,1.62) -- (1.3,1.62) -- (1.3,0.95);
+  \draw[white,line width=2.2pt,line cap=round] (1.3,1.62) -- (1.85,1.62);
+  \fill[white] (1.3,1.62) circle (2.1pt);
+  \node[font=\scriptsize\bfseries,white] at (1.3,0.55) {AI};
+\end{tikzpicture}
+
+\vspace{0.6cm}
+{\Huge\bfseries\color{deepblue} StudyMate AI}\\[0.35cm]
+{\Large\color{appbg} An AI-Powered Study Companion Mobile Application}\\[0.5cm]
+{\large\itshape Project Report}\\[0.2cm]
+\rule{0.72\textwidth}{0.6pt}
+
+\vspace{0.7cm}
+{\large Submitted in partial fulfillment of the requirements of}\\[0.15cm]
+{\Large\bfseries\color{deepblue} Software Development and Project Management Lab}\\[0.15cm]
+{\large Course Code: \textbf{CSE474.3} \quad\textbullet\quad Section: \textbf{3}}
+
+\vspace{0.8cm}
+% ---- Team ------------------------------------------------------------
+\begin{tabular}{|>{\centering\arraybackslash}p{0.44\textwidth}|>{\centering\arraybackslash}p{0.30\textwidth}|}
+\hline
+\rowcolor{tablehead}\textbf{Name of the Team Member} & \textbf{Student ID}\\
+\hline
+Abdullah Al Fahad & 2023100000289\\
+\hline
+Sanjit Sharif & 2023100000308\\
+\hline
+\end{tabular}
+
+\vspace{0.8cm}
+% ---- Faculty ----------------------------------------------------------
+\begin{tabular}{@{}rp{0.62\textwidth}@{}}
+\textbf{Course Faculty} & Dr. Rakib Ahmed Saleh\\
+ & Faculty Member, Department of Computer Science \& Engineering\\[0.25cm]
+\textbf{Project Duration} & July 5, 2026 --- September 30, 2026\\
+\textbf{Date of Submission} & September 30, 2026\\
+\end{tabular}
+
+\vfill
+
+\begin{tikzpicture}
+  \fill[appcyan,rounded corners=6pt] (0,0) rectangle (12.6,1.8);
+  \node[font=\bfseries,white] at (6.3,1.22) {Department of Computer Science and Engineering};
+  \node[font=\bfseries\Large,white] at (6.3,0.55) {Southeast University};
+\end{tikzpicture}
+
+\vspace{0.2cm}
+{\normalsize Dhaka, Bangladesh}
+\vspace*{0.35cm}
+\end{titlepage}
+
+% ======================================================================
+% inlined from sections/letter.tex
+% ======================================================================
+% =====================================================================
+%  LETTER OF SUBMISSION
+% =====================================================================
+\thispagestyle{empty}
+\begin{spacing}{1.15}
+\noindent
+September 30, 2026\\[0.6cm]
+\noindent
+Dr. Rakib Ahmed Saleh\\
+Course Faculty\\
+Software Development and Project Management Lab (CSE474.3, Section 3)\\
+Department of Computer Science and Engineering\\
+Southeast University, Dhaka\\[0.6cm]
+
+\noindent\textbf{Subject: Submission of the project report on ``StudyMate AI --- An AI-Powered Study Companion Mobile Application''.}
+
+\vspace{0.3cm}
+\noindent Dear Sir,
+
+\vspace{0.2cm}
+\noindent With due respect, we, the undersigned students of Section 3, are pleased to submit
+the project report of our course project titled \textbf{``StudyMate AI --- An AI-Powered
+Study Companion Mobile Application''}, developed as part of the Software Development and
+Project Management Laboratory (CSE474.3).
+
+The project was carried out from \textbf{July 5, 2026} to \textbf{September 30, 2026}.
+During this period we applied the software development life cycle together with project
+management practices --- scheduling, effort and risk management, design, iterative
+implementation, and systematic testing --- to build a cross-platform mobile application
+integrating Firebase authentication with Google Gemini based AI services (conversational
+study assistance, PDF summarization, and quiz generation).
+
+This report documents the complete development and management process, including the
+project plan, Gantt chart and critical-path analysis, requirement specifications, system
+design diagrams, implementation details, test cases and results. All diagrams presented
+in the report have been drawn in \LaTeX{}.
+
+We sincerely thank you for your guidance, continuous feedback, and cooperation
+throughout the course of this project. We hope the report meets the expected standard,
+and we would be grateful for any constructive feedback.
+
+\vspace{0.7cm}
+\noindent Sincerely yours,
+
+\vspace{0.9cm}
+\noindent
+\begin{tabular}{@{}p{0.45\textwidth}p{0.45\textwidth}@{}}
+\rule{5.4cm}{0.4pt} & \rule{5.4cm}{0.4pt}\\
+\textbf{Abdullah Al Fahad} & \textbf{Sanjit Sharif}\\
+ID: 2023100000289 & ID: 2023100000308\\
+CSE474.3, Section 3 & CSE474.3, Section 3\\
+\end{tabular}
+\end{spacing}
+\clearpage
+
+% ======================================================================
+% inlined from sections/abstract.tex
+% ======================================================================
+% =====================================================================
+%  ABSTRACT
+% =====================================================================
+\chapter*{\centering Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\begin{spacing}{1.15}
+\noindent
+\textbf{StudyMate AI} is a cross-platform mobile application that acts as an AI-powered
+study companion for university students. The project was developed over a period of
+thirteen weeks (July 5, 2026 -- September 30, 2026) by a two-member team following an
+iterative, Agile-inspired software development life cycle combined with structured project
+management practices. The application is built with React Native using the Expo framework
+and TypeScript on the client side, a Node.js/Express REST backend on the server side, and
+the Google Gemini large language model for all AI capabilities. Firebase Authentication
+provides secure email/password sign-in, sign-up, and password recovery, while local,
+per-user persistence is realized through AsyncStorage. The main features of the system are:
+an intelligent streaming AI chat assistant; automatic structured summarization of uploaded
+lecture PDFs; on-demand generation of multiple-choice quizzes for any topic with
+selectable difficulty; a personal notes manager with search and edit support; and a study
+planner with progress tracking that is reflected on a personalized home dashboard.
+
+This report documents the full software development and project management process:
+feasibility analysis, functional and non-functional requirement engineering, work breakdown
+structure, activity scheduling with a Gantt chart, critical-path (CPM) analysis, effort
+estimation, risk management, system architecture and detailed design (use-case, component,
+sequence, and data models), implementation, and testing. All diagrams were produced
+directly in \LaTeX{}. The system passed 30 out of 30 designed test cases during system
+testing, and the finished product satisfies all planned functional requirements within the
+scheduled timeline.
+
+\vspace{0.4cm}
+\noindent\textbf{Keywords:} mobile application, React Native, Expo, artificial
+intelligence, large language model, Firebase authentication, PDF summarization, quiz
+generation, Agile development, project management, CPM.
+\end{spacing}
+\clearpage
+
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+\clearpage
+
+\pagenumbering{arabic}
+
+% ======================================================================
+% inlined from sections/ch01-introduction.tex
+% ======================================================================
+% =====================================================================
+%  CHAPTER 1 -- INTRODUCTION
+% =====================================================================
+\chapter{Introduction}
+
+\section{Background of the Project}
+University students juggle many courses, readings, and examinations within limited
+time, while lecture content is scattered across PDF slides, textbooks, and notes.
+At the same time, large language models (LLMs) have matured into practical tools that
+can answer academic questions, condense long documents, and generate practice
+questions on demand.
+
+The \textbf{StudyMate AI} project combines these observations into one mobile
+application: (i) a conversational AI assistant, (ii) automatic summarization of
+lecture PDFs, (iii) automatic multiple-choice quiz generation, (iv) personal note
+management, and (v) study planning with progress tracking. It targets Android and
+iOS through a single React Native (Expo) codebase and integrates Google Gemini AI
+through a lightweight Node.js backend.
+
+\section{Problem Statement}
+Existing study tools are fragmented: students use one app for note taking, another for
+scheduling, web browsers for asking AI questions, and no tool at all for condensing the
+dozens of PDF slides distributed by instructors. This fragmentation causes:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Time loss} --- switching between tools and re-reading long PDFs that contain only a few exam-relevant points.
+  \item \textbf{Lack of self-assessment} --- students rarely create their own practice questions, so weak topics are discovered only during exams.
+  \item \textbf{Poor planning visibility} --- study sessions are not tracked, so students cannot measure consistency or progress.
+  \item \textbf{No personalization} --- generic AI chat services do not keep study notes, plans, and progress under one authenticated, per-user account.
+\end{itemize}
+StudyMate AI addresses these problems by unifying AI assistance and study management in
+one authenticated mobile application.
+
+\section{Objectives of the Project}
+\subsection{General Objective}
+To design, implement, and evaluate an AI-powered, cross-platform mobile study companion
+application within a fixed thirteen-week schedule using modern software engineering and
+project management practices.
+
+\subsection{Specific Objectives}
+\begin{enumerate}[leftmargin=*]
+  \item To implement secure user authentication (registration, login, password reset) using Firebase Authentication.
+  \item To build a real-time AI chat module that streams Google Gemini responses token by token through a Node.js backend.
+  \item To implement PDF summarization that converts uploaded lecture documents (up to 10\,MB) into structured study notes.
+  \item To implement an automatic quiz generator producing multiple-choice questions with configurable count (5/10/15) and difficulty (easy/medium/hard).
+  \item To implement per-user local persistence for notes and study sessions using AsyncStorage.
+  \item To provide a personalized dashboard showing study progress and one-tap access to every module.
+  \item To manage the project with a documented work breakdown structure, schedule (Gantt chart), critical-path analysis, effort estimate, and risk register.
+  \item To verify the system through a documented test plan covering unit, integration, and system levels.
+\end{enumerate}
+
+\section{Scope of the Project}
+The scope of the project includes:
+\begin{itemize}[leftmargin=*]
+  \item A mobile client (Android-first, iOS-capable) developed with Expo/React Native and TypeScript;
+  \item A REST backend (Node.js, Express) exposing three AI endpoints --- chat, PDF summarization, and quiz generation --- with retry logic and input validation;
+  \item Firebase email/password authentication with display-name profiles and password-reset e-mail;
+  \item Local, device-side persistence of notes and study sessions, isolated per authenticated user;
+  \item Complete project management artifacts: schedule, WBS, CPM network, effort and cost estimation, and risk management.
+\end{itemize}
+The following items are explicitly \textbf{out of scope} for this release: cloud
+synchronization of notes across devices, social or collaborative study features,
+payment/subscription services, and iOS App Store or Google Play store publication
+(development builds and Expo Go are used for evaluation).
+
+\section{Methodology Overview}
+The project follows an \textbf{iterative, Agile-inspired life cycle} organized into five
+two-week development sprints sandwiched between an inception/planning phase and a
+closing testing-and-release phase. At the end of each sprint a potentially shippable
+increment is demonstrated, requirements are re-prioritized, and the next sprint is
+planned. Project management artifacts (schedule, risks, effort) are maintained as living
+documents and reviewed weekly. Chapter~\ref{ch:pm} describes the methodology and all
+management artifacts in detail.
+
+\section{Tools and Environment Summary}
+Table~\ref{tab:env-summary} summarizes the principal tools used during the project;
+detailed versions and roles appear in Chapter~\ref{ch:implementation}.
+
+\begin{table}[H]
+\centering
+\caption{Summary of development tools and environment.}
+\label{tab:env-summary}
+\footnotesize
+\begin{tabular}{lll}
+\toprule
+\textbf{Tool / Technology} & \textbf{Role} & \textbf{Layer}\\
+\midrule
+Expo SDK 54 / React Native 0.81 & Cross-platform mobile client & Frontend\\
+TypeScript 5.9 & Type-safe client development & Frontend\\
+Node.js + Express 5 & AI backend and API gateway & Backend\\
+@google/genai SDK (Gemini) & Large language model integration & Backend\\
+Firebase Authentication & User accounts and security & Service\\
+AsyncStorage & Per-user local persistence & Storage\\
+GitHub (git) & Version control and collaboration & Management\\
+VS Code, Expo Go, Android Emulator & Development and testing & Management\\
+\LaTeX{} (TikZ, pgfgantt) & Documentation and diagrams & Management\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Report Organization}
+The remainder of this report is organized as follows. Chapter~\ref{ch:pm} presents the
+project management plan, including the selected life cycle, work breakdown structure,
+Gantt chart, critical-path analysis, effort estimation, and risk management.
+Chapter~\ref{ch:requirements} contains the requirement analysis and feasibility study.
+Chapter~\ref{ch:design} describes the system design with use-case, architecture,
+component, sequence, and data diagrams, together with the user-interface design.
+Chapter~\ref{ch:implementation} documents the implementation of each module.
+Chapter~\ref{ch:testing} reports the testing strategy, test cases, and results.
+Chapter~\ref{ch:results} discusses the results and limitations, and
+Chapter~\ref{ch:conclusion} concludes the report with directions for future work.
+
+% ======================================================================
+% inlined from sections/ch02-project-management.tex
+% ======================================================================
+% =====================================================================
+%  CHAPTER 2 -- PROJECT MANAGEMENT PLAN
+% =====================================================================
+\chapter{Project Management Plan}\label{ch:pm}
+
+\section{Software Development Life Cycle Model}
+For StudyMate AI we selected an \textbf{iterative, Agile-inspired life cycle}
+(scrum-like sprints without the full Scrum ceremony overhead, which is impractical for
+a two-member student team). The rationale is:
+
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Evolving requirements.} AI-driven features (chat quality, summary format, quiz JSON contract) needed repeated tuning based on real model output; a strictly linear (waterfall) plan would have frozen these requirements too early.
+  \item \textbf{Early and continuous risk reduction.} The riskiest integration --- the Gemini API --- was prototyped in the second sprint, so feasibility problems would have surfaced while schedule buffer still existed.
+  \item \textbf{Frequent feedback.} A working increment was demonstrated at the end of every two-week sprint to the course faculty and fellow students, and feedback was folded into the next sprint.
+  \item \textbf{Small team.} Two developers can coordinate with lightweight daily check-ups instead of heavy documentation gates, which Agile explicitly supports.
+\end{itemize}
+
+Figure~\ref{fig:sdlc} illustrates the selected model: after a short inception phase the
+team iterates through requirement, design, implementation and testing activities in
+two-week sprints, and a working increment is released at the end of the cycle.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  phase/.style={draw=deepblue,fill=appcyan!20,rounded corners=5pt,minimum height=1.1cm,minimum width=3.0cm,align=center,font=\small\bfseries},
+  io/.style={draw=deepblue,fill=tablehead,rounded corners=2pt,minimum height=1.1cm,minimum width=2.6cm,align=center,font=\small\bfseries},
+  arr/.style={-stealth',thick,draw=deepblue},
+]
+\node[io] (in) at (0,0) {Inception \&\\Planning};
+\node[phase] (req) at (7,1.7) {Requirements};
+\node[phase] (des) at (10.6,0) {Design};
+\node[phase] (imp) at (7,-1.7) {Implementation};
+\node[phase] (tst) at (3.4,0) {Testing};
+\node[io] (rel) at (13.6,-1.7) {Release \&\\Handover};
+\node[font=\scriptsize\bfseries,text=deepblue,align=center] at (7,0) {Sprint demo \&\\re-planning\\(every 2 weeks)};
+\draw[arr] (in.east) -- (tst.west);
+\draw[arr] (tst.north) to[bend left=25] (req.west);
+\draw[arr] (req.east) to[bend left=25] (des.north);
+\draw[arr] (des.south) to[bend left=25] (imp.east);
+\draw[arr] (imp.west) to[bend left=25] (tst.south);
+\draw[arr] (imp.east) to[bend right=15] (rel.west);
+\end{tikzpicture}%
+}
+\caption{Iterative, Agile-inspired SDLC adopted for StudyMate AI; each pass through the cycle is one two-week sprint.}
+\label{fig:sdlc}
+\end{figure}
+
+The project timeline (July 5, 2026 -- September 30, 2026) was divided into the phases
+shown in Table~\ref{tab:phases}.
+
+\begin{table}[H]
+\centering
+\caption{Project phases and sprints.}
+\label{tab:phases}
+\small
+\begin{tabular}{llp{7.6cm}}
+\toprule
+\textbf{Phase} & \textbf{Weeks} & \textbf{Deliverables}\\
+\midrule
+Inception & W1 (Jul 5--11) & Problem definition, feasibility study, SRS v1.0\\
+Planning \& Design & W2 (Jul 12--18) & Project plan, UI wireframes, architecture baseline\\
+Sprint 1 & W3--W4 & UI foundation, navigation, Firebase authentication\\
+Sprint 2 & W5--W6 & Express backend, Gemini integration, streaming AI chat\\
+Sprint 3 & W7--W8 & PDF summarization, AI quiz generator\\
+Sprint 4 & W9--W10 & Notes manager, study planner, dashboard polish\\
+Sprint 5 & W11 & Integration hardening, About/Explore screen\\
+Testing & W12 & System testing, bug fixing, regression\\
+Release & W13 (ends Sep 30) & UAT, final report, submission\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Team Organization and Roles}
+The team consists of two members. Roles were assigned according to individual strength,
+while code reviews were always performed jointly (``two eyes'' principle).
+
+\begin{table}[H]
+\centering
+\caption{Team roles and responsibilities.}
+\label{tab:roles}
+\small
+\begin{tabular}{p{4.6cm}p{9.9cm}}
+\toprule
+\textbf{Member} & \textbf{Roles and Responsibilities}\\
+\midrule
+Abdullah Al Fahad (2023100000289) & Frontend engineering (all screens, theming, navigation); Firebase authentication flows; notes and study-planner modules; documentation and report preparation.\\
+\addlinespace
+Sanjit Sharif (2023100000308) & Team lead; backend engineering (Express API, Gemini integration, retry/validation logic); quiz-generation pipeline; system testing lead; schedule and risk tracking.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Work Breakdown Structure}
+Figure~\ref{fig:wbs} presents the work breakdown structure (WBS) of the project. The
+second level follows the major deliverables; the third level lists the work packages
+that were estimated and scheduled in the next sections.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  every node/.style={font=\small},
+  l1/.style={draw=deepblue,fill=deepblue,text=white,rounded corners=3pt,minimum height=0.9cm,minimum width=4.6cm,align=center,font=\small\bfseries},
+  l2/.style={draw=deepblue,fill=tablehead,rounded corners=2pt,minimum height=0.75cm,minimum width=3.1cm,align=center,font=\footnotesize\bfseries},
+  l3/.style={draw=commentgray,fill=white,rounded corners=2pt,minimum height=0.6cm,minimum width=2.9cm,align=center,font=\scriptsize},
+  edge from parent/.style={draw=commentgray,thick},
+  level 1/.style={sibling distance=13.4cm,level distance=1.7cm},
+  level 2/.style={sibling distance=3.5cm,level distance=1.6cm},
+  level 3/.style={sibling distance=3.1cm,level distance=1.4cm},
+]
+\node[l1]{1.\ StudyMate AI Project}[level distance=1.9cm]
+  child{node[l2]{1.1 Project\\Management}
+    child{node[l3]{Planning \& WBS}}
+    child{node[l3]{Schedule \& Risk tracking}}}
+  child{node[l2]{1.2 Requirements\\and Design}
+    child{node[l3]{SRS}}
+    child{node[l3]{UI/UX design}}
+    child{node[l3]{Architecture}}}
+  child{node[l2]{1.3 Frontend\\Development}
+    child{node[l3]{UI foundation}}
+    child{node[l3]{Auth screens}}
+    child{node[l3]{Feature screens}}}
+  child{node[l2]{1.4 Backend\\Development}
+    child{node[l3]{API server}}
+    child{node[l3]{Gemini services}}}
+  child{node[l2]{1.5 Testing \&\\Release}
+    child{node[l3]{Test execution}}
+    child{node[l3]{Docs \& delivery}}};
+\end{tikzpicture}}
+\caption{Work breakdown structure of the StudyMate AI project.}
+\label{fig:wbs}
+\end{figure}
+
+\section{Project Schedule (Gantt Chart)}
+The activity schedule derived from the WBS is shown in
+Figure~\ref{fig:gantt}. The planning unit is one week (W1 = July 5--11, \ldots,
+W13 = September 27--30). Milestones mark the completion of each major deliverable.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{ganttchart}[
+  canvas/.style={draw=commentgray,fill=white},
+  vgrid={*2{draw=none},draw=codeframe},
+  hgrid={*1{draw=codeframe}},
+  title height=0.9,
+  title label font=\scriptsize\bfseries,
+  bar/.style={fill=appcyan,draw=deepblue,rounded corners=2pt},
+  bar incomplete/.style={fill=codeframe},
+  group/.style={fill=deepblue,draw=deepblue,rounded corners=2pt},
+  milestone/.style={shape=ganttmilestone,inner sep=0pt,fill=apppink,draw=deepblue},
+  progress label text=\relax,
+  bar label font=\scriptsize,
+  group label font=\scriptsize\bfseries,
+  milestone label font=\scriptsize,
+  x unit=1.02cm,
+  y unit chart=0.68cm,
+  y unit title=0.7cm,
+  time slot format=simple,
+  link/.style={-stealth',line width=0.7pt,draw=commentgray},
+]{1}{13}
+  \gantttitle{StudyMate AI --- Project Schedule (5 July -- 30 September 2026)}{13}\\
+  \gantttitle{July}{4}\gantttitle{August}{5}\gantttitle{September}{4}\\
+  \gantttitlelist{1,...,13}{1}\\
+  %
+  \ganttgroup{Inception \& Planning}{1}{2}\\
+  \ganttbar[name=actA]{Requirements \& SRS}{1}{1}\\
+  \ganttbar[name=actB]{Planning \& Design}{2}{2}\\
+  \ganttgroup{Development Sprints}{3}{11}\\
+  \ganttbar[name=actC]{UI Foundation \& Navigation}{3}{3}\\
+  \ganttbar[name=actE]{Backend Core (Express + Gemini)}{3}{4}\\
+  \ganttbar[name=actD]{Firebase Authentication}{4}{4}\\
+  \ganttbar[name=actH]{Notes Manager}{4}{5}\\
+  \ganttbar[name=actF]{AI Chat (streaming)}{5}{6}\\
+  \ganttbar[name=actJ]{Study Planner}{5}{5}\\
+  \ganttbar[name=actG]{PDF Summarization}{6}{7}\\
+  \ganttbar[name=actI]{AI Quiz Generator}{7}{8}\\
+  \ganttbar[name=actK]{Dashboard, Explore, Integration}{8}{9}\\
+  \ganttgroup{Testing \& Release}{9}{13}\\
+  \ganttbar[name=actL]{System Testing \& Bug Fixing}{9}{11}\\
+  \ganttbar[name=actM]{UAT, Documentation \& Delivery}{12}{13}\\
+  %
+  \ganttmilestone{SRS frozen}{1}\\
+  \ganttmilestone{Design approved}{2}\\
+  \ganttmilestone{Auth complete}{4}\\
+  \ganttmilestone{AI features complete}{8}\\
+  \ganttmilestone{Integration complete}{9}\\
+  \ganttmilestone{Final release}{13}\\
+  %
+  \ganttlink{actA}{actB}
+  \ganttlink{actB}{actC}
+  \ganttlink{actC}{actD}
+  \ganttlink{actC}{actH}
+  \ganttlink{actE}{actF}
+  \ganttlink{actD}{actF}
+  \ganttlink{actF}{actG}
+  \ganttlink{actG}{actI}
+  \ganttlink{actH}{actJ}
+  \ganttlink{actI}{actK}
+  \ganttlink{actJ}{actK}
+  \ganttlink{actK}{actL}
+  \ganttlink{actL}{actM}
+\end{ganttchart}}
+\caption{Gantt chart of the StudyMate AI project (W1 = July 5--11, \ldots, W13 = September 27--30, 2026).}
+\label{fig:gantt}
+\end{figure}
+
+\section{Network Diagram and Critical-Path Analysis}
+The activity-on-node network derived from the same activity list is shown in
+Figure~\ref{fig:cpm}. Each box displays the activity, its duration in days, and its
+early start--early finish interval counted from project start (day 0 = July 5, 2026).
+The forward and backward passes show that the \textbf{critical path} is
+
+\[
+\text{A} \rightarrow \text{B} \rightarrow \text{C} \rightarrow \text{D}
+\rightarrow \text{F} \rightarrow \text{G} \rightarrow \text{I}
+\rightarrow \text{K} \rightarrow \text{L} \rightarrow \text{M}
+\]
+
+with a total length of \textbf{88 days}, which exactly matches the available duration
+(July 5 -- September 30, 2026). Activities E (backend core), H (notes) and J (planner)
+possess float of 14, 16 and 16 days respectively; they were deliberately scheduled in
+parallel with critical activities so that both team members stayed fully utilized.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  act/.style={draw=deepblue,fill=white,rounded corners=2pt,minimum width=2.5cm,minimum height=1.5cm,align=center,font=\scriptsize},
+  crit/.style={act,fill=riskhigh!40,draw=critical,thick},
+  arr/.style={-stealth',thick,draw=appbg},
+  carr/.style={arr,critical,line width=1.2pt},
+]
+\node[crit] (A) at (0,0) {\textbf{A} Requirements\\\footnotesize 7 d\\[1pt]\tiny ES 0 -- EF 7};
+\node[crit] (B) at (3.1,0) {\textbf{B} Plan \& Design\\\footnotesize 7 d\\[1pt]\tiny ES 7 -- EF 14};
+\node[crit] (C) at (6.2,0) {\textbf{C} UI Foundation\\\footnotesize 7 d\\[1pt]\tiny ES 14 -- EF 21};
+\node[crit] (D) at (9.3,0) {\textbf{D} Auth\\\footnotesize 7 d\\[1pt]\tiny ES 21 -- EF 28};
+\node[crit] (F) at (12.4,0) {\textbf{F} AI Chat\\\footnotesize 8 d\\[1pt]\tiny ES 28 -- EF 36};
+\node[crit] (G) at (15.5,0) {\textbf{G} PDF Summary\\\footnotesize 8 d\\[1pt]\tiny ES 36 -- EF 44};
+\node[crit] (I) at (18.6,0) {\textbf{I} Quiz Gen.\\\footnotesize 8 d\\[1pt]\tiny ES 44 -- EF 52};
+\node[crit] (K) at (21.7,0) {\textbf{K} Integration\\\footnotesize 7 d\\[1pt]\tiny ES 52 -- EF 59};
+\node[crit] (L) at (24.8,0) {\textbf{L} Testing\\\footnotesize 14 d\\[1pt]\tiny ES 59 -- EF 73};
+\node[crit] (M) at (27.9,0) {\textbf{M} Release\\\footnotesize 15 d\\[1pt]\tiny ES 73 -- EF 88};
+% non-critical
+\node[act] (E) at (4.65,-2.4) {\textbf{E} Backend Core\\\footnotesize 8 d\\[1pt]\tiny ES 14 -- EF 22};
+\node[act] (H) at (7.75,-2.4) {\textbf{H} Notes\\\footnotesize 8 d\\[1pt]\tiny ES 21 -- EF 29};
+\node[act] (J) at (10.85,-2.4) {\textbf{J} Planner\\\footnotesize 7 d\\[1pt]\tiny ES 29 -- EF 36};
+% critical-path arrows
+\draw[carr] (A) -- (B);
+\draw[carr] (B) -- (C);
+\draw[carr] (C) -- (D);
+\draw[carr] (D) -- (F);
+\draw[carr] (F) -- (G);
+\draw[carr] (G) -- (I);
+\draw[carr] (I) -- (K);
+\draw[carr] (K) -- (L);
+\draw[carr] (L) -- (M);
+% float activities
+\draw[arr] (B.south) -- (E.north);
+\draw[arr] (E.east) -| (F.south);
+\draw[arr] (C.south) -- (H.north);
+\draw[arr] (H.east) -- (J.west);
+\draw[arr] (J.north) |- (K.south);
+% legend
+\node[draw=none,font=\scriptsize,anchor=west] at (-1.2,-3.6) {%
+  \textcolor{critical}{\textbf{\rule{0.55cm}{2.2pt}}}\; critical path \qquad
+  \textcolor{appbg}{\rule{0.55cm}{1.2pt}}\; non-critical dependency \qquad
+  d = working days};
+\end{tikzpicture}}
+\caption{Activity-on-node network diagram with critical path (red). Durations in days; ES/EF measured from July 5, 2026.}
+\label{fig:cpm}
+\end{figure}
+
+\section{Effort and Cost Estimation}
+\subsection{Effort Estimation}
+The effort was estimated bottom-up from the activity list
+(Table~\ref{tab:effort}). Both members worked roughly 12 productive hours per week on
+the project (besides regular coursework), giving a capacity of
+$2 \times 13 \times 12 = 312$ person-hours.
+
+\begin{table}[H]
+\centering
+\caption{Bottom-up effort estimate per activity.}
+\label{tab:effort}
+\small
+\begin{tabular}{llrr}
+\toprule
+\textbf{ID} & \textbf{Activity} & \textbf{Estimated (person-h)} & \textbf{Actual (person-h)}\\
+\midrule
+A & Requirements \& SRS & 20 & 22\\
+B & Planning, design, wireframes & 22 & 24\\
+C & UI foundation \& navigation & 24 & 26\\
+D & Firebase authentication & 22 & 25\\
+E & Backend core (Express + Gemini) & 26 & 27\\
+F & AI chat module & 26 & 28\\
+G & PDF summarization module & 26 & 24\\
+H & Notes manager & 20 & 19\\
+I & Quiz generator & 24 & 26\\
+J & Study planner & 18 & 17\\
+K & Dashboard, Explore, integration & 22 & 23\\
+L & Testing \& bug fixing & 34 & 32\\
+M & UAT, documentation, delivery & 28 & 27\\
+\midrule
+\multicolumn{2}{l}{\textbf{Total}} & \textbf{312} & \textbf{320}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A top-down cross-check using the function-point technique (2 internal logical files,
+2 external interface files, 8 external inputs, 6 external outputs, 5 external inquiries
+$\Rightarrow$ 106 unadjusted function points, VAF $=1.14$, i.e.\ $\approx 121$ adjusted
+FP) with a productivity of 40~FP per person-month for AI-assisted mobile development
+yields about 3 person-months $\approx 300$ person-hours, which agrees with the
+bottom-up figure within 7\%. The final planned effort was therefore fixed at
+\textbf{320 person-hours}, and the project actually consumed \textbf{320 person-hours}
+--- an estimation error of 2.5\%.
+
+\subsection{Cost Estimation}
+Because this is an academic project developed by students, labor cost is not charged.
+All services were used within their free tiers
+(Table~\ref{tab:cost}); the only direct expense was the Gemini API consumption, which
+remained inside the free quota thanks to the exponential-backoff retry policy.
+
+\begin{table}[H]
+\centering
+\caption{Direct project cost summary.}
+\label{tab:cost}
+\small
+\begin{tabular}{llll}
+\toprule
+\textbf{Item} & \textbf{Plan used} & \textbf{Budget (BDT)} & \textbf{Actual (BDT)}\\
+\midrule
+Firebase (Authentication) & Spark (free) & 0 & 0\\
+Google Gemini API & Free tier & 0 & 0\\
+GitHub / version control & Free & 0 & 0\\
+Expo tooling & Free & 0 & 0\\
+Contingency reserve (10\%) & --- & 500 & 0\\
+\midrule
+\multicolumn{2}{l}{\textbf{Total}} & \textbf{500} & \textbf{0}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Risk Management}
+Risks were identified at planning time and reviewed at every sprint boundary. Each risk
+was scored on probability (P) and impact (I) using a three-level scale
+(Low/Medium/High); the resulting assessment is shown in the probability--impact matrix
+of Figure~\ref{fig:riskmatrix}.
+
+\begin{table}[H]
+\centering
+\caption{Risk register of the StudyMate AI project.}
+\label{tab:risks}
+\small
+\begin{tabular}{cp{4.1cm}ccp{6.2cm}}
+\toprule
+\textbf{ID} & \textbf{Risk Description} & \textbf{P} & \textbf{I} & \textbf{Mitigation / Response}\\
+\midrule
+R1 & Gemini API rate limiting (HTTP 429) interrupts AI features & H & M & Exponential backoff with up to 5 retries (implemented); queue user feedback during waits\\
+\addlinespace
+R2 & Exposure of the Gemini API key to the client & M & H & Key kept server-side only; client never contacts Gemini directly\\
+\addlinespace
+R3 & Model returns malformed quiz JSON & M & M & Strict schema validation on the server; regenerate on parse failure\\
+\addlinespace
+R4 & Uploaded PDF exceeds model/backend limits & M & L & 10\,MB limit enforced by Multer; clear client-side error message\\
+\addlinespace
+R5 & Scope creep delays the fixed deadline & M & M & MoSCoW prioritization; sprint reviews; change requests only via backlog\\
+\addlinespace
+R6 & Notes/plans lost when device storage is cleared & L & M & Warning in UI; per-user keys prepare future cloud sync\\
+\addlinespace
+R7 & Team member unavailable (exams, illness) & M & M & Cross-training on both layers; pair work on critical modules\\
+\addlinespace
+R8 & Breaking changes in Expo/React Native updates & L & M & Dependencies pinned to tested versions throughout the project\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  cell/.style={minimum width=2.6cm,minimum height=1.35cm,draw=appbg,font=\footnotesize\bfseries,align=center},
+]
+% grid (probability rows: High top)
+\node[cell,fill=riskhigh] (c1) at (0,2.7) {R2};
+\node[cell,fill=riskmed] (c2) at (2.6,2.7) {R1, R7};
+\node[cell,fill=riskhigh] (c3) at (5.2,2.7) {---};
+\node[cell,fill=riskmed] (c4) at (0,1.35) {R8};
+\node[cell,fill=riskmed] (c5) at (2.6,1.35) {R3, R5};
+\node[cell,fill=riskhigh] (c6) at (5.2,1.35) {---};
+\node[cell,fill=risklow] (c7) at (0,0) {---};
+\node[cell,fill=risklow] (c8) at (2.6,0) {R6};
+\node[cell,fill=riskmed] (c9) at (5.2,0) {R4};
+% axes labels
+\node[font=\footnotesize,rotate=90,anchor=south] at (-2.35,2.02) {Probability};
+\node[font=\scriptsize,anchor=east] at (-1.45,2.7) {High};
+\node[font=\scriptsize,anchor=east] at (-1.45,1.35) {Medium};
+\node[font=\scriptsize,anchor=east] at (-1.45,0) {Low};
+\node[font=\footnotesize] at (2.6,-1.35) {Impact};
+\node[font=\scriptsize] at (0,-0.98) {Low};
+\node[font=\scriptsize] at (2.6,-0.98) {Medium};
+\node[font=\scriptsize] at (5.2,-0.98) {High};
+\end{tikzpicture}
+\caption{Probability--impact risk matrix for the StudyMate AI project.}
+\label{fig:riskmatrix}
+\end{figure}
+
+No high/high risk materialized during the project. R1 (rate limiting) did occur during
+Sprint 2 load tests and was resolved by the retry mechanism described in
+Chapter~\ref{ch:implementation}; R3 occurred twice during development and motivated the
+server-side quiz schema validation.
+
+\section{Communication and Configuration Management}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Meetings:} short daily stand-ups on campus, a sprint review and planning meeting every second Sunday, and weekly progress reports to the course faculty.
+  \item \textbf{Version control:} a single Git repository on GitHub with a protected \texttt{main} branch; feature branches merged after mutual review; conventional commit messages.
+  \item \textbf{Issue tracking:} GitHub Issues with milestone labels per sprint.
+  \item \textbf{Secrets management:} the Gemini API key is stored in a \texttt{.env} file excluded from version control (\texttt{dotenv}); Firebase web keys are restricted to the app identifier.
+\end{itemize}
+
+% ======================================================================
+% inlined from sections/ch03-requirements.tex
+% ======================================================================
+% =====================================================================
+%  CHAPTER 3 -- REQUIREMENTS ANALYSIS
+% =====================================================================
+\chapter{Requirements Analysis}\label{ch:requirements}
+
+\section{Requirement Elicitation}
+Requirements were elicited through (i) discussion of the course faculty's expectations,
+(ii) a short informal survey of 15 fellow students about their daily study pain points,
+and (iii) analysis of existing tools (generic AI chat apps, note apps, calendar apps).
+The elicited requirements were then prioritized with the MoSCoW technique; all
+\emph{Must-have} requirements listed below were implemented within the project
+duration.
+
+\section{Functional Requirements}
+Table~\ref{tab:fr} lists the functional requirements of the system.
+
+\begin{table}[H]
+\centering
+\caption{Functional requirements.}
+\label{tab:fr}
+\small
+\small
+\begin{tabular}{cp{3.0cm}p{7.8cm}c}
+\toprule
+\textbf{ID} & \textbf{Requirement} & \textbf{Description} & \textbf{MoSCoW}\\
+\midrule
+FR-01 & Welcome screen & Introduce the app and its features; navigate to login & M\\
+FR-02 & Registration & Create an account with name, email, password ($\geq$6 characters) and confirmation; store the display name in the profile & M\\
+FR-03 & Login & Sign in with email/password; friendly messages for each Firebase error code; show/hide password & M\\
+FR-04 & Password recovery & Send a password-reset e-mail via Firebase & M\\
+FR-05 & Home dashboard & Personalized greeting, today's progress from study sessions, quick access grid to all tools, sign out & M\\
+FR-06 & AI chat & Send free-text study questions; receive \emph{streamed} Gemini answers; typing indicator; in-session history & M\\
+FR-07 & PDF summarization & Pick a PDF ($\leq$10\,MB), upload it, and receive a structured summary (topic, key points, definitions, concepts, short summary, exam notes) & M\\
+FR-08 & AI quiz generation & Generate an MCQ quiz for any topic with 5/10/15 questions and easy/medium/hard difficulty & M\\
+FR-09 & Quiz taking & Answer questions with instant feedback and explanations; final score screen & M\\
+FR-10 & Notes management & Create, edit, delete, and search notes; persist per user & M\\
+FR-11 & Study planner & Add study sessions (subject, date, duration), mark them complete, delete them & M\\
+FR-12 & Progress tracking & Compute completion percentage and completed/remaining counts from the planner data & M\\
+FR-13 & About/Explore screen & Present the app and the development team & S\\
+FR-14 & Session persistence & Keep the user signed in across app restarts & M\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Non-Functional Requirements}
+\begin{table}[H]
+\centering
+\caption{Non-functional requirements.}
+\label{tab:nfr}
+\small
+\begin{tabular}{lp{10.6cm}}
+\toprule
+\textbf{Category} & \textbf{Requirement}\\
+\midrule
+Performance & The first streamed chat token shall appear within 3\,s on the university network; PDF upload limited to 10\,MB to bound latency; UI interactions respond in $<$200\,ms.\\
+Usability & Dark, glare-free theme consistent across all screens; Poppins typography; every feature reachable in at most two taps from the dashboard.\\
+Security & Passwords managed exclusively by Firebase Authentication; the Gemini API key never shipped with the client; all AI requests validated server-side.\\
+Reliability & Automatic retry with exponential backoff for transient Gemini failures (HTTP 429/5xx); graceful, human-readable error messages on every failure path.\\
+Portability & Single React Native codebase runnable on Android and iOS through Expo; backend is a plain Node.js service deployable on any host.\\
+Maintainability & TypeScript with typed data models; one file per screen; backend logic separated into small, commented route handlers.\\
+Compatibility & Android emulator API 30+ and physical devices; backend reachable from the emulator via \texttt{10.0.2.2} mapping.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Feasibility Study}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Technical feasibility.} All required technologies (Expo, Firebase, Express, Gemini API) are mature, documented, and available in free tiers. A proof-of-concept call to Gemini was successfully executed in week 1, confirming feasibility. \textit{Verdict: feasible.}
+  \item \textbf{Economic feasibility.} No paid service is required (Table~\ref{tab:cost}); development machines were already owned by the team. \textit{Verdict: feasible.}
+  \item \textbf{Operational feasibility.} The target users are students familiar with mobile apps; the interface follows platform conventions, so no training is needed. \textit{Verdict: feasible.}
+  \item \textbf{Schedule feasibility.} The critical-path analysis (Section~2.5) shows the scope fits exactly into the 88 available days with parallelization of non-critical work. \textit{Verdict: feasible, with tight but acceptable schedule risk.}
+\end{itemize}
+
+\section{Use Case Model}
+The system has a single primary actor, the \textbf{Student}, and one supporting
+actor, the \textbf{Gemini AI service} (invoked indirectly through the backend).
+Figure~\ref{fig:usecase} shows the use case diagram.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  actor/.style={font=\footnotesize\bfseries,align=center},
+  uc/.style={draw=deepblue,fill=tablehead,ellipse,minimum width=3.4cm,minimum height=1.05cm,align=center,font=\footnotesize},
+  sysbox/.style={draw=deepblue,thick,rounded corners=6pt},
+]
+% system boundary
+\node[sysbox,minimum width=13.2cm,minimum height=11.4cm,fill=white] (sys) at (1.2,0) {};
+\node[font=\bfseries\small,color=deepblue] at (1.2,5.35) {StudyMate AI System};
+% use cases
+\node[uc] (uc1) at (-1.4,4.2) {Register};
+\node[uc] (uc2) at (-1.4,3.0) {Login};
+\node[uc] (uc3) at (-1.4,1.8) {Reset Password};
+\node[uc] (uc4) at (-1.4,0.6) {View Dashboard \& Progress};
+\node[uc] (uc5) at (2.6,4.2) {Ask AI Chat};
+\node[uc] (uc6) at (2.6,3.0) {Summarize PDF};
+\node[uc] (uc7) at (2.6,1.8) {Generate \& Take Quiz};
+\node[uc] (uc8) at (2.6,0.6) {Manage Notes};
+\node[uc] (uc9) at (2.6,-0.6) {Manage Study Plan};
+\node[uc] (uc10) at (0.6,-2.0) {Sign Out};
+\node[uc] (uc11) at (0.6,-3.4) {View About/Team};
+% actor: student (stick figure drawn in place)
+\draw[thick] (-5.6,0.32) circle (0.11);
+\draw[thick] (-5.6,0.21) -- (-5.6,-0.05) (-5.75,0.10) -- (-5.45,0.10)
+  (-5.6,-0.05) -- (-5.72,-0.30) (-5.6,-0.05) -- (-5.48,-0.30);
+\node[actor] (stu) at (-5.6,-0.62) {Student (User)};
+% actor: gemini
+\draw[thick] (6.75,4.55) circle (0.11);
+\draw[thick] (6.75,4.44) -- (6.75,4.18) (6.6,4.33) -- (6.9,4.33)
+  (6.75,4.18) -- (6.63,3.93) (6.75,4.18) -- (6.87,3.93);
+\node[actor] (ai) at (6.75,3.6) {Gemini AI\\[-1pt]\scriptsize(via backend)};
+% associations
+\foreach \u in {uc1,uc2,uc3,uc4,uc10,uc11} \draw (stu) -- (\u);
+\draw (stu) -- (uc8);
+\draw (stu) -- (uc9);
+\draw (stu) -- (uc5);
+\draw (stu) -- (uc6);
+\draw (stu) -- (uc7);
+\draw (ai) -- (uc5);
+\draw (ai) -- (uc6);
+\draw (ai) -- (uc7);
+% include relationships
+\draw[dashed,-stealth'] (uc6.north) -- node[font=\scriptsize,fill=white,inner sep=1pt,xshift=0.9cm]{\textit{include}} (uc5.south);
+\draw[dashed,-stealth'] (uc7.east) -- ++(1.35,0) |- node[font=\scriptsize,fill=white,inner sep=1pt,pos=0.62]{\textit{include}} (uc5.east);
+\end{tikzpicture}}
+\caption{Use case diagram of StudyMate AI. Dashed arrows denote \textit{include} dependencies: PDF summarization and quiz generation both include the Gemini request handling performed by the AI chat service layer.}
+\label{fig:usecase}
+\end{figure}
+
+\subsection{Use Case Specifications (representative)}
+\begin{table}[H]
+\centering
+\caption{Use case specification: UC-06 Summarize PDF.}
+\label{tab:uc-pdf}
+\small
+\begin{tabular}{p{3.6cm}p{9.2cm}}
+\toprule
+\textbf{Use case} & UC-06 Summarize PDF\\
+\textbf{Actor} & Student\\
+\textbf{Precondition} & Student is logged in; backend is reachable\\
+\textbf{Main flow} & 1. Student opens \emph{PDF Summary}. 2. Student taps ``Pick PDF'' and selects a file ($\leq$10\,MB). 3. Student taps ``Summarize''. 4. App uploads the file to \texttt{POST /summarize-pdf}. 5. Backend forwards the PDF to Gemini with a structured summary prompt. 6. Gemini returns the summary; backend responds with JSON. 7. App renders the structured summary sections.\\
+\textbf{Alternate flows} & 4a. No file selected $\rightarrow$ error alert. 4b. File $>$10\,MB $\rightarrow$ backend returns 400, app shows friendly message. 5a. Gemini transient failure $\rightarrow$ up to 5 retries with exponential backoff; if all fail, HTTP 503 and retry suggestion.\\
+\textbf{Postcondition} & Summary displayed; nothing stored server-side\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Use case specification: UC-05 Ask AI Chat.}
+\label{tab:uc-chat}
+\small
+\begin{tabular}{p{3.6cm}p{9.2cm}}
+\toprule
+\textbf{Use case} & UC-05 Ask AI Chat\\
+\textbf{Actor} & Student\\
+\textbf{Precondition} & Student is logged in; backend is reachable\\
+\textbf{Main flow} & 1. Student opens \emph{AI Chat}. 2. Student types a question and presses send. 3. App shows the user bubble and a typing indicator. 4. App calls \texttt{POST /chat} which streams Gemini output. 5. Chunks are appended to the AI bubble in real time until the stream ends.\\
+\textbf{Alternate flows} & 4a. Empty message $\rightarrow$ send disabled. 4b. Backend error before streaming $\rightarrow$ error toast, message kept in the input box.\\
+\textbf{Postcondition} & Conversation visible in the current session history\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Use case specification: UC-07 Generate \& Take Quiz.}
+\label{tab:uc-quiz}
+\small
+\begin{tabular}{p{3.6cm}p{9.2cm}}
+\toprule
+\textbf{Use case} & UC-07 Generate \& Take Quiz\\
+\textbf{Actor} & Student\\
+\textbf{Precondition} & Student is logged in; backend is reachable\\
+\textbf{Main flow} & 1. Student enters a topic and selects question count (5/10/15) and difficulty. 2. Student taps ``Generate''. 3. Backend prompts Gemini for strict JSON, validates the schema and returns the quiz. 4. App shows one question at a time. 5. Student selects an option; correct/incorrect feedback and an explanation are shown. 6. After the last question a score summary is displayed.\\
+\textbf{Alternate flows} & 3a. Invalid JSON from model $\rightarrow$ server returns 500 with retry advice. 3b. Transient Gemini error $\rightarrow$ retries, then 503.\\
+\textbf{Postcondition} & Score shown; quiz state can be discarded by returning to setup\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ======================================================================
+% inlined from sections/ch04-system-design.tex
+% ======================================================================
+% =====================================================================
+%  CHAPTER 4 -- SYSTEM DESIGN (architecture, components, behavior, data)
+% =====================================================================
+\chapter{System Design}\label{ch:design}
+
+\section{System Architecture}
+StudyMate AI follows a \textbf{three-tier client--server architecture}
+(Figure~\ref{fig:architecture}). The mobile client never talks to the AI model
+directly; every AI request is routed through our backend so that the API key stays
+server-side and prompts/validation can evolve without shipping a new app version.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  tier/.style={draw=deepblue,rounded corners=6pt,align=center},
+  box/.style={draw=deepblue,fill=tablehead,rounded corners=3pt,minimum height=1.0cm,align=center,font=\footnotesize},
+  small/.style={draw=commentgray,fill=white,rounded corners=2pt,minimum height=0.8cm,align=center,font=\scriptsize},
+  arr/.style={-stealth',thick,draw=appbg},
+  lbl/.style={font=\scriptsize,fill=white,inner sep=2pt},
+]
+% presentation tier
+\node[tier,minimum width=16.4cm,minimum height=3.3cm,fill=tablehead!40] (pt) at (0,0) {};
+\node[font=\bfseries\footnotesize,color=deepblue,anchor=west,fill=white] at (-8.1,1.65) {Presentation Tier (Mobile Client)};
+\node[box,minimum width=3.7cm] (scr) at (-6.15,0) {Screens (Expo Router)\\[-1pt]\scriptsize Welcome, Auth, Tabs};
+\node[box,minimum width=3.7cm] (feat) at (-2.05,0) {Feature Modules\\[-1pt]\scriptsize Chat, PDF, Quiz, Notes, Planner};
+\node[box,minimum width=3.7cm] (store) at (2.05,0) {AsyncStorage\\[-1pt]\scriptsize per-user local data};
+\node[box,minimum width=3.7cm] (fbsdk) at (6.15,0) {Firebase Auth SDK\\[-1pt]\scriptsize session state};
+% service tier
+\node[tier,minimum width=16.4cm,minimum height=2.6cm,fill=tablehead!40] (st) at (0,-4.6) {};
+\node[font=\bfseries\footnotesize,color=deepblue,anchor=west,fill=white] at (-8.1,-3.3) {Application Tier (Node.js + Express)};
+\node[small,minimum width=3.4cm] (r1) at (-6.0,-4.8) {\texttt{POST /chat}\\[-1pt]streaming};
+\node[small,minimum width=3.4cm] (r2) at (-2.0,-4.8) {\texttt{POST /summarize-pdf}\\[-1pt]Multer $\leq$10\,MB};
+\node[small,minimum width=3.4cm] (r3) at (2.0,-4.8) {\texttt{POST /generate-quiz}\\[-1pt]JSON validation};
+\node[small,minimum width=3.4cm] (mid) at (6.0,-4.8) {Middleware\\[-1pt]\scriptsize CORS, JSON, retry policy};
+% external tier
+\node[tier,minimum width=16.4cm,minimum height=2.2cm,fill=tablehead!40] (et) at (0,-8.4) {};
+\node[font=\bfseries\footnotesize,color=deepblue,anchor=west,fill=white] at (-8.1,-7.3) {External Services};
+\node[box,minimum width=4.6cm] (gem) at (-3.0,-8.6) {Google Gemini LLM\\[-1pt]\scriptsize @google/genai SDK};
+\node[box,minimum width=4.6cm] (fb) at (3.4,-8.6) {Firebase Authentication\\[-1pt]\scriptsize accounts, password reset};
+% arrows
+\draw[arr] (feat.south) -- node[lbl]{REST / JSON} (r1.north);
+\draw[arr] (fbsdk.south) -- node[lbl,right]{SDK calls} (fb.north);
+\draw[arr] (r1.south) -- ++(0,-1.1) -| (gem.north);
+\draw[arr] (r2.south) -- ++(0,-1.35) -| (gem.north);
+\draw[arr] (r3.south) -- ++(0,-1.6) -| (gem.north);
+\draw[arr,dashed] (scr.east) -- (feat.west);
+\draw[arr,dashed] (feat.east) -- (store.west);
+\end{tikzpicture}}
+\caption{Three-tier architecture of StudyMate AI.}
+\label{fig:architecture}
+\end{figure}
+
+\section{Component Design}
+Figure~\ref{fig:components} decomposes the implementation into components. Each
+screen is one TypeScript module; shared services are injected through plain imports,
+which keeps the dependency graph acyclic.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  comp/.style={draw=deepblue,fill=white,rounded corners=3pt,minimum height=1.05cm,align=center,font=\scriptsize},
+  head/.style={draw=deepblue,fill=deepblue,text=white,rounded corners=3pt,minimum height=0.9cm,align=center,font=\footnotesize\bfseries},
+  dep/.style={-stealth',draw=commentgray,thick},
+]
+\node[head,minimum width=5.2cm] (app) at (0,0) {App Shell\\[-1pt]\scriptsize expo-router, \_layout.tsx, theme};
+\node[head,minimum width=4.6cm] (auth) at (-6.6,-2.4) {Authentication};
+\node[head,minimum width=4.6cm] (ui) at (0,-2.4) {Tab Navigation};
+\node[head,minimum width=4.6cm] (be) at (6.6,-2.4) {Backend (server.js)};
+% auth children
+\node[comp] (login) at (-8.0,-4.2) {login.tsx};
+\node[comp] (reg) at (-5.2,-4.2) {register.tsx};
+\node[comp] (fbc) at (-6.6,-5.6) {firebaseConfig.ts};
+% ui children
+\node[comp] (home) at (-1.4,-4.2) {(tabs)/index.tsx\\[-1pt]Dashboard};
+\node[comp] (expl) at (1.4,-4.2) {(tabs)/explore.tsx\\[-1pt]About};
+% features
+\node[comp] (chat) at (-1.9,-7.2) {ai-chat.tsx};
+\node[comp] (pdf) at (0.4,-7.2) {pdf-summary.tsx};
+\node[comp] (quiz) at (2.7,-7.2) {quiz.tsx};
+\node[comp] (notes) at (-2.9,-8.8) {notes.tsx};
+\node[comp] (plan) at (0.4,-8.8) {study-planner.tsx};
+% backend children
+\node[comp] (svc) at (6.6,-4.2) {Gemini service\\[-1pt]\scriptsize generateWithRetry};
+\node[comp] (rt) at (6.6,-5.6) {Routes \texttt{/chat} \texttt{/summarize-pdf} \texttt{/generate-quiz}};
+\node[comp] (mul) at (6.6,-7.0) {Multer upload + validation};
+% dependencies
+\draw[dep] (app.south) -- (auth.north);
+\draw[dep] (app.south) -- (ui.north);
+\draw[dep] (app.south) -- (be.north);
+\draw[dep] (auth.south) -- (login.north);
+\draw[dep] (auth.south) -- (reg.north);
+\draw[dep] (login.south) -- (fbc.north);
+\draw[dep] (reg.south) -- (fbc.north);
+\draw[dep] (ui.south) -- (home.north);
+\draw[dep] (ui.south) -- (expl.north);
+\draw[dep] (home.south) -- (chat.north);
+\draw[dep] (home.south) -- (pdf.north);
+\draw[dep] (home.south) -- (quiz.north);
+\draw[dep] (home.south) -- (notes.north);
+\draw[dep] (home.south) -- (plan.north);
+\draw[dep] (be.south) -- (svc.north);
+\draw[dep] (svc.south) -- (rt.north);
+\draw[dep] (rt.south) -- (mul.north);
+\draw[dep,dashed] (chat.east) ++(0,0) -| (rt.west);
+\end{tikzpicture}}
+\caption{Component decomposition of the client and backend.}
+\label{fig:components}
+\end{figure}
+
+\section{Navigation / Screen Flow}
+Figure~\ref{fig:flow} shows how the user moves between screens. After successful
+authentication the tabbed area becomes the root of the navigation stack
+(\texttt{router.replace}); signing out returns the user to the login screen.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  scr/.style={draw=deepblue,fill=tablehead,rounded corners=3pt,minimum height=0.95cm,minimum width=2.6cm,align=center,font=\scriptsize\bfseries},
+  arr/.style={-stealth',thick,draw=appbg},
+  yes/.style={font=\scriptsize,color=appgreen!60!black},
+  no/.style={font=\scriptsize,color=critical},
+]
+\node[scr] (w) at (0,0) {Welcome};
+\node[scr] (l) at (0,-2.2) {Login};
+\node[scr] (r) at (4.2,-2.2) {Register};
+\node[scr,fill=risklow] (h) at (0,-4.6) {Home Dashboard\\[-1pt]\scriptsize (tab)};
+\node[scr] (e) at (-4.6,-4.6) {Explore / About\\[-1pt]\scriptsize (tab)};
+\node[scr] (c) at (-5.6,-7.6) {AI Chat};
+\node[scr] (p) at (-2.8,-7.6) {PDF Summary};
+\node[scr] (q) at (0,-7.6) {AI Quiz};
+\node[scr] (n) at (2.8,-7.6) {Notes};
+\node[scr] (s) at (5.6,-7.6) {Study Planner};
+\draw[arr] (w) -- node[right,font=\scriptsize]{Get Started} (l);
+\draw[arr] (l) -- node[above,font=\scriptsize]{No account? Register} (r);
+\draw[arr] (r) -- ++(0,1.0) -| node[pos=0.25,above,font=\scriptsize]{auto sign-in} (h.north east);
+\draw[arr] (l) -- node[left,font=\scriptsize]{credentials valid} (h);
+\draw[arr,dashed] (l) -- ++(-3.0,0) node[left,font=\scriptsize,align=center]{Forgot password\\(reset e-mail)};
+\draw[arr] (h) -- (e);
+\draw[arr] (h.south) -- (c.north);
+\draw[arr] (h.south) -- (p.north);
+\draw[arr] (h.south) -- (q.north);
+\draw[arr] (h.south) -- (n.north);
+\draw[arr] (h.south) -- (s.north);
+\draw[arr,dashed] (h.east) ++(0,0) -- ++(1.6,0) node[right,font=\scriptsize,align=center]{Sign out\\$\rightarrow$ Login};
+\end{tikzpicture}}
+\caption{Screen flow of the application.}
+\label{fig:flow}
+\end{figure}
+
+\section{Sequence Diagrams}
+
+\subsection{User Login}
+\begin{figure}[H]
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[
+  obj/.style={draw=deepblue,fill=tablehead,rounded corners=2pt,minimum width=3.2cm,minimum height=0.9cm,align=center,font=\footnotesize\bfseries},
+  life/.style={dashed,draw=commentgray},
+  msg/.style={-stealth',thick,draw=appbg},
+  ret/.style={-stealth',dashed,draw=commentgray},
+  lbl/.style={font=\scriptsize,above},
+]
+\node[obj] (u) at (0,0) {Student};
+\node[obj] (s) at (4.4,0) {LoginScreen};
+\node[obj] (f) at (8.8,0) {Firebase Auth};
+\node[obj] (h) at (13.2,0) {Home Dashboard};
+\foreach \x in {0,4.4,8.8,13.2} \draw[life] (\x,-0.55) -- (\x,-8.2);
+\draw[msg] (0,-1.4) -- node[lbl]{1: enter email + password} (4.4,-1.4);
+\draw[msg] (4.4,-2.3) -- node[lbl]{2: signInWithEmailAndPassword()} (8.8,-2.3);
+\draw[ret] (8.8,-3.2) -- node[lbl]{3: user credential (uid, displayName)} (4.4,-3.2);
+\node[font=\scriptsize,align=left] at (4.4,-4.0) {4: validate \& alert on\\Firebase error codes};
+\draw[msg] (4.4,-5.0) -- node[lbl]{5: router.replace("/(tabs)")} (13.2,-5.0);
+\draw[ret] (13.2,-5.9) -- node[lbl]{6: personalized dashboard} (0,-5.9);
+\draw[msg,dashed] (0,-7.0) -- node[lbl,above]{alt: invalid credentials $\rightarrow$ error alert stays on Login} (4.4,-7.0);
+\end{tikzpicture}}
+\caption{Sequence diagram: user login.}
+\label{fig:seq-login}
+\end{figure}
+
+\subsection{AI Chat (Streaming)}
+\begin{figure}[H]
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[
+  obj/.style={draw=deepblue,fill=tablehead,rounded corners=2pt,minimum width=3.2cm,minimum height=0.9cm,align=center,font=\footnotesize\bfseries},
+  life/.style={dashed,draw=commentgray},
+  msg/.style={-stealth',thick,draw=appbg},
+  ret/.style={-stealth',dashed,draw=commentgray},
+  lbl/.style={font=\scriptsize,above},
+]
+\node[obj] (u) at (0,0) {Student};
+\node[obj] (s) at (4.4,0) {ChatScreen};
+\node[obj] (b) at (8.8,0) {Express /chat};
+\node[obj] (g) at (13.2,0) {Gemini API};
+\foreach \x in {0,4.4,8.8,13.2} \draw[life] (\x,-0.55) -- (\x,-9.6);
+\draw[msg] (0,-1.4) -- node[lbl]{1: type question, tap send} (4.4,-1.4);
+\draw[msg] (4.4,-2.3) -- node[lbl]{2: POST /chat \{message\}} (8.8,-2.3);
+\draw[msg] (8.8,-3.2) -- node[lbl]{3: generateContentStream (retry $\times$5)} (13.2,-3.2);
+\draw[ret] (13.2,-4.1) -- node[lbl]{4: text chunk$_1$} (8.8,-4.1);
+\draw[ret] (8.8,-4.8) -- node[lbl]{5: res.write(chunk$_1$)} (4.4,-4.8);
+\draw[ret] (4.4,-5.5) -- node[lbl]{6: append to AI bubble} (0,-5.5);
+\node[font=\scriptsize,color=commentgray] at (6.6,-6.3) {\ldots chunks repeat until stream ends \ldots};
+\draw[ret] (8.8,-7.1) -- node[lbl]{7: res.end()} (4.4,-7.1);
+\node[font=\scriptsize,align=left] at (4.4,-8.0) {8: hide typing indicator};
+\draw[msg,dashed] (0,-8.9) -- node[lbl]{alt: 503 before stream $\rightarrow$ error toast} (4.4,-8.9);
+\end{tikzpicture}}
+\caption{Sequence diagram: AI chat with streaming response.}
+\label{fig:seq-chat}
+\end{figure}
+
+\subsection{PDF Summarization}
+\begin{figure}[H]
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[
+  obj/.style={draw=deepblue,fill=tablehead,rounded corners=2pt,minimum width=3.2cm,minimum height=0.9cm,align=center,font=\footnotesize\bfseries},
+  life/.style={dashed,draw=commentgray},
+  msg/.style={-stealth',thick,draw=appbg},
+  ret/.style={-stealth',dashed,draw=commentgray},
+  lbl/.style={font=\scriptsize,above},
+]
+\node[obj] (u) at (0,0) {Student};
+\node[obj] (s) at (4.4,0) {PdfSummaryScreen};
+\node[obj] (b) at (8.8,0) {Express /summarize-pdf};
+\node[obj] (g) at (13.2,0) {Gemini API};
+\foreach \x in {0,4.4,8.8,13.2} \draw[life] (\x,-0.55) -- (\x,-9.0);
+\draw[msg] (0,-1.4) -- node[lbl]{1: pick PDF (DocumentPicker)} (4.4,-1.4);
+\draw[msg] (0,-2.3) -- node[lbl]{2: tap Summarize} (4.4,-2.3);
+\draw[msg] (4.4,-3.2) -- node[lbl]{3: multipart POST (pdf $\leq$ 10\,MB)} (8.8,-3.2);
+\node[font=\scriptsize,align=left] at (8.8,-4.0) {4: Multer in-memory buffer,\\base64-encode};
+\draw[msg] (8.8,-4.9) -- node[lbl]{5: generateContent (PDF + prompt, retry $\times$5)} (13.2,-4.9);
+\draw[ret] (13.2,-5.8) -- node[lbl]{6: structured summary text} (8.8,-5.8);
+\draw[ret] (8.8,-6.6) -- node[lbl]{7: 200 \{fileName, summary\}} (4.4,-6.6);
+\draw[ret] (4.4,-7.4) -- node[lbl]{8: render sections} (0,-7.4);
+\draw[msg,dashed] (0,-8.4) -- node[lbl]{alt: 400/503 $\rightarrow$ friendly error message} (4.4,-8.4);
+\end{tikzpicture}}
+\caption{Sequence diagram: PDF summarization.}
+\label{fig:seq-pdf}
+\end{figure}
+
+\section{Data Design}
+All application data except accounts is stored locally on the device with
+AsyncStorage, namespaced per Firebase user id so that several accounts can share one
+device. Table~\ref{tab:data} defines the records; Figure~\ref{fig:data} shows the
+logical data model.
+
+\begin{table}[H]
+\centering
+\caption{Locally persisted data structures (JSON in AsyncStorage).}
+\label{tab:data}
+\scriptsize
+\begin{tabular}{p{2.0cm}p{3.4cm}p{5.0cm}p{3.4cm}}
+\toprule
+\textbf{Entity} & \textbf{Fields} & \textbf{Storage key} & \textbf{Notes}\\
+\midrule
+User & uid, email, displayName, password (managed by Firebase) & --- & Identity comes from Firebase Auth\\
+Note & id (timestamp), title, content, updatedAt & \texttt{@studymate\_notes\_<uid>} & JSON array of notes\\
+StudySession & id (timestamp), subject, date, duration, completed & \texttt{studymate\_study\_sessions\_<uid>} & JSON array of sessions\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  ent/.style={draw=deepblue,rounded corners=3pt,align=left,font=\scriptsize,inner sep=6pt,fill=white},
+]
+\node[ent] (user) at (0,0) {%
+\textbf{\normalsize USER}\\[2pt]
+\underline{uid}\\
+email\\
+displayName\\
+passwordHash (Firebase)};
+\node[ent] (note) at (-5.2,-0.4) {%
+\textbf{\normalsize NOTE}\\[2pt]
+\underline{id}\\
+title\\
+content\\
+updatedAt};
+\node[ent] (sess) at (5.2,-0.4) {%
+\textbf{\normalsize STUDY\_SESSION}\\[2pt]
+\underline{id}\\
+subject\\
+date\\
+duration\\
+completed};
+\draw[-stealth',thick,draw=appbg] (note.east) -- node[above,font=\scriptsize]{0..*} (user.west);
+\draw[-stealth',thick,draw=appbg] (sess.west) -- node[above,font=\scriptsize]{0..*} (user.east);
+\node[font=\scriptsize] at (0,-2.7) {Relationships are enforced logically via the per-uid storage keys.};
+\end{tikzpicture}
+\caption{Logical data model of StudyMate AI.}
+\label{fig:data}
+\end{figure}
+
+\section{API Design}
+The backend exposes the REST endpoints listed in Table~\ref{tab:api} on port 3000.
+
+\begin{table}[H]
+\centering
+\caption{Backend API endpoints.}
+\label{tab:api}
+\small
+\footnotesize
+\begin{tabular}{lp{3.0cm}p{3.2cm}p{4.0cm}}
+\toprule
+\textbf{Method/Path} & \textbf{Purpose} & \textbf{Request} & \textbf{Response}\\
+\midrule
+\texttt{GET /} & Health check & --- & \texttt{\{message\}}\\
+\addlinespace
+\texttt{POST /chat} & Streaming study chat & JSON \texttt{\{message\}} & \texttt{text/plain} chunk stream\\
+\addlinespace
+\texttt{POST /summarize-pdf} & Summarize a lecture PDF & multipart field \texttt{pdf} ($\leq$10\,MB) & JSON \texttt{\{fileName, summary\}}\\
+\addlinespace
+\texttt{POST /generate-quiz} & Generate MCQ quiz & JSON \texttt{\{topic, numberOfQuestions, difficulty\}} & JSON quiz object (validated)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Error policy: \textbf{400} for missing/invalid input, \textbf{500} for invalid model
+output format, and \textbf{503} when Gemini is temporarily unavailable after all retry
+attempts. All three AI routes share the same exponential-backoff retry helper
+(Section~\ref{sec:impl-backend}).
+
+\clearpage
+
+% ======================================================================
+%  DATA FLOW DIAGRAMS
+% ======================================================================
+\section{Data Flow Diagrams}\label{sec:dfd}
+Figures~\ref{fig:dfd0}--\ref{fig:dfd1} model the movement of data through the
+system using standard DFD notation: external entities as rectangles, processes
+as rounded boxes and data stores as open-ended rectangles.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  ent/.style={draw=deepblue,fill=tablehead,rounded corners=2pt,minimum height=1.2cm,minimum width=3.4cm,align=center,font=\small\bfseries},
+  prc/.style={draw=deepblue,fill=appcyan!20,rounded corners=6pt,minimum height=1.7cm,minimum width=4.4cm,align=center,font=\small\bfseries},
+  flow/.style={-latex,thick,draw=commentgray},
+  flabel/.style={font=\scriptsize,align=center,text=deepblue},
+]
+\node[ent] (stu) at (0,0) {Student\\(CSE undergraduate)};
+\node[prc] (p0) at (7,0) {0\\StudyMate AI};
+\node[ent] (gem) at (13.6,1.5) {Gemini API\\(external)};
+\node[ent] (fb) at (13.6,-1.5) {Firebase\\(external)};
+\draw[flow] ([yshift=0.3cm]stu.east) -- node[flabel,above,pos=0.45]{questions, PDFs, notes, plans} ([yshift=0.3cm]p0.west);
+\draw[flow] ([yshift=-0.3cm]p0.west) -- node[flabel,below]{answers, summaries, quizzes, progress} ([yshift=-0.3cm]stu.east);
+\draw[flow] ([yshift=0.3cm]p0.east) -- node[flabel,above]{prompts, extracted PDF text} ([yshift=0.2cm]gem.west);
+\draw[flow] ([yshift=-0.2cm]gem.west) -- node[flabel,below]{streamed answers, summaries, quizzes} ([yshift=0.15cm]p0.east);
+\draw[flow] ([yshift=-0.15cm]p0.east) -- node[flabel,above]{credentials, notes, sessions} ([yshift=0.2cm]fb.west);
+\draw[flow] ([yshift=-0.2cm]fb.west) -- node[flabel,below]{auth tokens, stored user data} ([yshift=-0.3cm]p0.east);
+\end{tikzpicture}}
+\caption{Context (level-0) data flow diagram of StudyMate AI.}
+\label{fig:dfd0}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[
+  ent/.style={draw=deepblue,fill=tablehead,rounded corners=2pt,minimum height=1.2cm,minimum width=3.0cm,align=center,font=\small\bfseries},
+  prc/.style={draw=deepblue,fill=appcyan!20,rounded corners=5pt,minimum height=1.15cm,minimum width=3.6cm,align=center,font=\small\bfseries},
+  flow/.style={-latex,thick,draw=commentgray},
+  flabel/.style={font=\scriptsize,align=center,text=deepblue},
+]
+\node[ent] (stu) at (0,-6.6) {Student};
+\node[prc] (p1) at (5.6,-1.1) {1.0 Authenticate};
+\node[prc] (p2) at (5.6,-3.3) {2.0 Manage Notes};
+\node[prc] (p3) at (5.6,-5.5) {3.0 AI Chat};
+\node[prc] (p4) at (5.6,-7.7) {4.0 Summarize PDF};
+\node[prc] (p5) at (5.6,-9.9) {5.0 Generate Quiz};
+\node[prc] (p6) at (5.6,-12.1) {6.0 Plan Sessions};
+\node[ent] (fb) at (12.2,-1.1) {Firebase};
+\node[ent] (gem) at (12.2,-6.6) {Gemini API};
+% data stores (open-ended rectangles)
+\begin{scope}[thick,draw=deepblue]
+  \draw (10.5,-2.85) -| (13.9,-3.75) -- (10.5,-3.75);
+  \draw (11.3,-2.85) -- (11.3,-3.75);
+  \draw (10.5,-11.65) -| (13.9,-12.55) -- (10.5,-12.55);
+  \draw (11.3,-11.65) -- (11.3,-12.55);
+\end{scope}
+\node[font=\small\bfseries,text=deepblue] at (10.9,-3.3) {D1};
+\node[font=\small] at (12.6,-3.3) {Notes};
+\node[font=\small\bfseries,text=deepblue] at (10.9,-12.1) {D2};
+\node[font=\small] at (12.6,-12.1) {Study sessions};
+% student -> processes
+\draw[flow] (stu.75) to[out=20,in=190] node[flabel,pos=0.4,above]{e-mail / password} (p1.west);
+\draw[flow] (stu.45) to[out=10,in=185] node[flabel,pos=0.45,above]{create / edit note} (p2.west);
+\draw[flow] (stu.20) -- node[flabel,above]{question} (p3.west);
+\draw[flow] (stu.-20) -- node[flabel,below]{PDF file} (p4.west);
+\draw[flow] (stu.-45) to[out=-10,in=175] node[flabel,pos=0.45,below]{topic, count, difficulty} (p5.west);
+\draw[flow] (stu.-75) to[out=-20,in=160] node[flabel,pos=0.4,below]{plan / log session} (p6.west);
+% processes -> student (results)
+\draw[flow] ([yshift=-0.3cm]p3.west) to[out=190,in=15] node[flabel,below]{streamed answer} (stu.10);
+\draw[flow] ([yshift=0.3cm]p4.west) to[out=170,in=-10] node[flabel,above]{summary} (stu.-5);
+\draw[flow] ([yshift=0.3cm]p5.west) to[out=175,in=-20] node[flabel,above]{quiz + score} (stu.-30);
+\draw[flow] ([yshift=0.3cm]p6.west) to[out=160,in=-40] node[flabel,below,pos=0.62]{progress} (stu.-60);
+% right-hand flows
+\draw[flow] ([yshift=0.25cm]p1.east) -- node[flabel,above]{credentials} ([yshift=0.25cm]fb.west);
+\draw[flow] ([yshift=-0.25cm]fb.west) -- node[flabel,below]{UID + token} ([yshift=-0.25cm]p1.east);
+\draw[flow] ([yshift=0.25cm]p2.east) -- node[flabel,above]{write} (10.5,-3.05);
+\draw[flow] (10.5,-3.55) -- node[flabel,below]{read} ([yshift=-0.25cm]p2.east);
+\draw[flow] ([yshift=0.25cm]p3.east) to[out=0,in=150] node[flabel,pos=0.5,above]{question + context} ([yshift=0.35cm]gem.west);
+\draw[flow] ([yshift=0.1cm]gem.west) to[out=165,in=5] node[flabel,below]{streamed answer} ([yshift=-0.25cm]p3.east);
+\draw[flow] ([yshift=0.25cm]p4.east) -- node[flabel,above]{extracted text} ([yshift=0.1cm]gem.west);
+\draw[flow] ([yshift=-0.1cm]gem.west) -- node[flabel,below]{structured summary} ([yshift=-0.25cm]p4.east);
+\draw[flow] ([yshift=0.25cm]p5.east) to[out=0,in=210] node[flabel,pos=0.5,below]{generation request} ([yshift=-0.35cm]gem.west);
+\draw[flow] ([yshift=-0.1cm]gem.west) to[out=195,in=0] node[flabel,above]{questions (JSON)} ([yshift=-0.25cm]p5.east);
+\draw[flow] ([yshift=-0.25cm]p5.east) to[out=-20,in=90] node[flabel,right]{result} (11.6,-11.65);
+\draw[flow] ([yshift=0.25cm]p6.east) to[out=0,in=170] node[flabel,above]{session log} (10.5,-11.85);
+\draw[flow] (10.5,-12.35) to[out=180,in=-10] node[flabel,below]{history} ([yshift=-0.25cm]p6.east);
+\end{tikzpicture}}
+\caption{Level-1 data flow diagram of StudyMate AI.}
+\label{fig:dfd1}
+\end{figure}
+
+% ======================================================================
+%  USER INTERFACE DESIGN (real screenshots inserted on Overleaf)
+% ======================================================================
+\section{User Interface Design}
+The interface uses a dark glassmorphism theme (background \texttt{\#0B0F19},
+Poppins typography, cyan/purple/pink accents) to reduce eye strain during night
+study sessions; every feature is reachable from the home dashboard within two
+taps (NFR -- usability). The real screenshots of all screens are placed in this
+section: upload the PNG files listed in Table~\ref{tab:shotnames} into the
+\texttt{screenshots/} folder of the Overleaf project and each slot below embeds
+the corresponding image automatically; until then a labelled placeholder marks
+the slot.
+
+\begin{table}[H]
+\centering
+\caption{Screenshot file names (place the images in the \texttt{screenshots/} folder).}
+\label{tab:shotnames}
+\small
+\begin{tabular}{cll}
+\toprule
+\textbf{\#} & \textbf{File name} & \textbf{Screen}\\
+\midrule
+1 & \texttt{screenshots/01-welcome.png} & Welcome / splash\\
+2 & \texttt{screenshots/02-login.png} & Login\\
+3 & \texttt{screenshots/03-register.png} & Registration\\
+4 & \texttt{screenshots/04-home-dashboard.png} & Home dashboard\\
+5 & \texttt{screenshots/05-ai-chat.png} & AI chat (streaming)\\
+6 & \texttt{screenshots/06-notes.png} & Notes manager\\
+7 & \texttt{screenshots/07-pdf-summary.png} & PDF summary\\
+8 & \texttt{screenshots/08-quiz-setup.png} & Quiz setup\\
+9 & \texttt{screenshots/09-quiz-taking.png} & Quiz taking / result\\
+10 & \texttt{screenshots/10-study-planner.png} & Study planner\\
+11 & \texttt{screenshots/11-explore.png} & Explore / About\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\screenshot{01-welcome.png}{Welcome screen: branding, feature highlights and the entry point to authentication.}{fig:shot-welcome}
+\screenshot{02-login.png}{Login screen: e-mail/password sign-in with validation and password visibility toggle.}{fig:shot-login}
+\screenshot{03-register.png}{Registration screen: account creation via Firebase e-mail sign-up.}{fig:shot-register}
+\screenshot{04-home-dashboard.png}{Home dashboard: greeting, progress summary and the feature grid.}{fig:shot-home}
+\screenshot{05-ai-chat.png}{AI chat: streamed Gemini answers rendered with Markdown support.}{fig:shot-chat}
+\screenshot{06-notes.png}{Notes manager: search, create and edit notes stored per user.}{fig:shot-notes}
+\screenshot{07-pdf-summary.png}{PDF summary: structured AI summary (overview, key points, glossary, questions) of an uploaded PDF.}{fig:shot-pdf}
+\screenshot{08-quiz-setup.png}{Quiz setup: topic, number of questions and difficulty level.}{fig:shot-quizsetup}
+\screenshot{09-quiz-taking.png}{Quiz taking: one question at a time with instant feedback and the final score.}{fig:shot-quiztaking}
+\screenshot{10-study-planner.png}{Study planner: session list, streak counter and weekly progress.}{fig:shot-planner}
+\screenshot{11-explore.png}{Explore screen: about the application and the two-member development team.}{fig:shot-explore}
+
+% ======================================================================
+% inlined from sections/ch05-implementation.tex
+% ======================================================================
+% =====================================================================
+%  CHAPTER 5 -- IMPLEMENTATION
+% =====================================================================
+\chapter{Implementation}\label{ch:implementation}
+
+\section{Development Environment and Technology Stack}
+\begin{table}[H]
+\centering
+\caption{Final technology stack with versions.}
+\label{tab:stack}
+\footnotesize
+\begin{tabular}{lll}
+\toprule
+\textbf{Component} & \textbf{Technology} & \textbf{Version}\\
+\midrule
+Mobile framework & Expo (React Native) & SDK 54 (RN 0.81.5)\\
+Language (client) & TypeScript & 5.9\\
+Navigation & expo-router (file-based) & 6.0\\
+UI & React Native core + Ionicons + Poppins fonts & ---\\
+Local storage & @react-native-async-storage/async-storage & 2.2.0\\
+Authentication & Firebase Authentication (JS SDK) & 12.18\\
+Backend runtime & Node.js + Express & Express 5.1\\
+File upload & Multer (in-memory, 10\,MB limit) & 2.3\\
+AI SDK & @google/genai (Google Gemini) & 2.20\\
+Version control & Git + GitHub & ---\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The development environment consisted of VS Code with the Expo toolchain; the app was
+run on the Android emulator (backend address \texttt{10.0.2.2:3000} maps to the host
+machine) and on physical devices through Expo Go. The backend was started with
+\texttt{npm start} and reads the Gemini key from \texttt{.env}.
+
+\section{Backend Implementation}\label{sec:impl-backend}
+The backend (\texttt{backend/server.js}, 500 lines) is intentionally small: three
+routes plus a shared retry helper.
+
+\subsection{Retry Policy for the Gemini API}
+All model calls are wrapped in an exponential-backoff retry loop that reacts to
+transient HTTP statuses (429 and 5xx), which was essential during Sprint~2 rate-limit
+incidents (risk R1).
+
+\begin{lstlisting}[style=js,caption={Exponential-backoff retry helper (excerpt).},label={lst:retry}]
+async function generateWithRetry(contents, maxRetries = 4) {
+  let lastError;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await ai.models.generateContent({
+        model: GEMINI_MODEL,
+        contents,
+      });
+    } catch (error) {
+      lastError = error;
+      const status = error?.status || error?.code;
+      const shouldRetry =
+        status === 429 || status === 500 || status === 502 ||
+        status === 503 || status === 504;
+      if (!shouldRetry || attempt === maxRetries) throw error;
+      const delay = Math.pow(2, attempt) * 1000;  // 1s, 2s, 4s, 8s
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+  throw lastError;
+}
+\end{lstlisting}
+
+\subsection{Streaming Chat Endpoint}
+\texttt{POST /chat} sets plain-text streaming headers and pipes each Gemini chunk to
+the client as soon as it arrives, which keeps perceived latency low even for long
+answers (Listing~\ref{lst:stream}).
+
+\begin{lstlisting}[style=js,caption={Streaming response of \texttt{POST /chat} (excerpt).},label={lst:stream}]
+res.setHeader("Content-Type", "text/plain; charset=utf-8");
+res.setHeader("Cache-Control", "no-cache, no-transform");
+res.flushHeaders();
+
+const stream = await ai.models.generateContentStream({
+  model: GEMINI_MODEL,
+  contents: message.trim(),
+});
+for await (const chunk of stream) {
+  if (chunk.text) res.write(chunk.text);
+}
+res.end();
+\end{lstlisting}
+
+\subsection{PDF Summarization Endpoint}
+\texttt{POST /summarize-pdf} receives the file through Multer (in-memory, limited to
+10\,MB), base64-encodes it, and sends it to Gemini together with a prompt that
+enforces a fixed six-section structure (Main Topic, Key Points, Definitions,
+Concepts, Short Summary, Exam Notes). The response is returned as
+\texttt{\{fileName, summary\}}.
+
+\subsection{Quiz Generation with Schema Validation}
+The quiz route prompts the model to return \emph{strict JSON} and then validates the
+schema before anything reaches the client: exactly the requested number of questions,
+exactly four options each, and an integer \texttt{correctAnswer} in $[0,3]$.
+Listing~\ref{lst:quizval} shows the core of the validation; any violation produces a
+controlled error instead of a broken quiz screen.
+
+\begin{lstlisting}[style=js,caption={Server-side quiz schema validation (excerpt).},label={lst:quizval}]
+const quiz = JSON.parse(text);           // 500 on parse error
+if (quiz.questions.length !== questionCount)
+  throw new Error(`Expected ${questionCount} questions`);
+
+for (const question of quiz.questions) {
+  if (!Array.isArray(question.options) || question.options.length !== 4)
+    throw new Error("Invalid question format.");
+  if (!Number.isInteger(question.correctAnswer) ||
+      question.correctAnswer < 0 || question.correctAnswer > 3)
+    throw new Error("Invalid question format.");
+  if (!question.options.every((o) => typeof o === "string" && o.trim()))
+    throw new Error("Invalid options format.");
+}
+res.json(quiz);
+\end{lstlisting}
+
+\section{Authentication Module}
+\texttt{firebaseConfig.ts} initializes Firebase once and exports the \texttt{auth}
+instance. The registration flow validates completeness, password match and minimum
+length client-side, then calls \texttt{createUserWithEmailAndPassword} and
+\texttt{updateProfile} so that the display name powers the personalized dashboard.
+Login maps Firebase error codes to friendly messages
+(Listing~\ref{lst:login}) and, on success, replaces the navigation stack with the
+tabbed area. The \emph{Forgot password} link triggers
+\texttt{sendPasswordResetEmail}.
+
+\begin{lstlisting}[style=ts,caption={Login with Firebase error mapping (excerpt).},label={lst:login}]
+try {
+  await signInWithEmailAndPassword(auth, email.trim(), password);
+  router.replace("/(tabs)");
+} catch (error: any) {
+  if (error.code === "auth/user-not-found")
+    alert("No account found with this email.");
+  else if (error.code === "auth/wrong-password")
+    alert("Incorrect password.");
+  else if (error.code === "auth/invalid-credential")
+    alert("Invalid email or password.");
+  else alert("Login failed. Please try again.");
+}
+\end{lstlisting}
+
+\section{Feature Modules}
+\subsection{Home Dashboard}
+The dashboard subscribes to \texttt{onAuthStateChanged} for the user name and loads
+the study sessions of the current user on every focus (\texttt{useFocusEffect}). It
+derives \texttt{totalSessions}, \texttt{completedSessions}, and the percentage used by
+the animated progress bar, and exposes the feature grid plus a sign-out action with
+confirmation dialog.
+
+\subsection{AI Chat}
+The chat screen keeps the message history in component state, posts to
+\texttt{/chat}, and consumes the response with a streaming \texttt{fetch} reader; each
+received chunk is appended to the current AI bubble, producing the typewriter effect.
+A typing indicator and an empty-state greeting cover the waiting period.
+
+\subsection{PDF Summary}
+\texttt{expo-document-picker} selects the file; the screen builds a
+\texttt{FormData} upload and renders the returned summary. All failure modes (no file,
+oversized file, backend down, Gemini unavailable) map to human-readable alerts.
+
+\subsection{Quiz}
+The quiz screen is a small state machine: \emph{setup $\rightarrow$ generating
+$\rightarrow$ answering $\rightarrow$ result}. Answers are locked after selection,
+colored feedback is shown, the explanation is displayed, and the final screen reports
+score and percentage with a retry action.
+
+\subsection{Notes}
+Notes implements full CRUD against AsyncStorage under the key
+\texttt{@studymate\_notes\_\allowbreak<uid>} (Listing~\ref{lst:noteskey}). A search box filters
+title and content in real time; editing reuses the same editor card.
+
+\begin{lstlisting}[style=ts,caption={Per-user storage key isolation.},label={lst:noteskey}]
+const storageKey = `@studymate_notes_${currentUserId}`;
+const savedNotes = await AsyncStorage.getItem(storageKey);
+// writes mirror reads: setItem(storageKey, JSON.stringify(notes))
+\end{lstlisting}
+
+\subsection{Study Planner}
+The planner stores sessions under \texttt{studymate\_study\_\allowbreak sessions\_\allowbreak<uid>} and
+supports add, toggle-complete, and delete with confirmation. The dashboard re-reads
+this key whenever it gains focus, so progress updates propagate automatically between
+the two screens.
+
+\section{Build and Run Instructions}
+\begin{lstlisting}[style={},language={},basicstyle=\ttfamily\footnotesize,numbers=none,caption={Starting the system locally.},label={lst:run}]
+# 1) backend (requires GEMINI_API_KEY in backend/.env)
+cd backend && npm install && npm start      # http://localhost:3000
+
+# 2) mobile app
+npm install && npx expo start               # press a = Android emulator
+\end{lstlisting}
+
+\section{Version Control Practice}
+The repository uses one feature branch per module (e.g.\ \texttt{feature/\allowbreak ai-chat},
+\texttt{feature/\allowbreak pdf-summary}); merges into \texttt{main} were made only after the
+second member reviewed the diff. Commit messages follow the
+\texttt{type(scope): \allowbreak summary} convention, which made sprint changelogs trivial to
+produce.
+
+% ======================================================================
+% inlined from sections/ch06-testing.tex
+% ======================================================================
+% =====================================================================
+%  CHAPTER 6 -- TESTING
+% =====================================================================
+\chapter{Testing}\label{ch:testing}
+
+\section{Testing Strategy}
+Testing followed the V-model mapping of the development phases:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Unit level} --- each backend route handler and each client function was exercised manually with valid and invalid inputs during development;
+  \item \textbf{Integration level} --- client--backend pairs (chat, PDF, quiz) were tested against the real Gemini API on the emulator;
+  \item \textbf{System level} --- the complete app was tested against the requirement list (Table~\ref{tab:fr}) during Sprint 5 and the dedicated testing phase (W12);
+  \item \textbf{User acceptance} --- five fellow students performed free exploration with a short task script during W13.
+\end{itemize}
+All test cases were recorded in a shared spreadsheet and later transferred to
+Table~\ref{tab:tests}. A defect is reopened unless its fix passes both the original
+failing case and a regression pass over the authentication and dashboard flows.
+
+\section{Test Cases and Results}
+\small
+\begin{longtable}{p{1.0cm}p{3.6cm}p{3.8cm}p{3.4cm}p{1.2cm}}
+\caption{System test cases and outcomes.}\label{tab:tests}\\
+\toprule
+\textbf{ID} & \textbf{Scenario} & \textbf{Input / Steps} & \textbf{Expected Result} & \textbf{Status}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{ID} & \textbf{Scenario} & \textbf{Input / Steps} & \textbf{Expected Result} & \textbf{Status}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+TC-01 & Register with valid data & Name, valid email, 6+ char password twice & Account created; profile name stored; auto sign-in & Pass\\
+\addlinespace
+TC-02 & Register with mismatched passwords & Two different passwords & ``Passwords do not match'' alert; no account & Pass\\
+\addlinespace
+TC-03 & Register with short password & 4-character password & Minimum-length alert & Pass\\
+\addlinespace
+TC-04 & Login with valid credentials & Registered email + password & Success alert; dashboard opens with user name & Pass\\
+\addlinespace
+TC-05 & Login with wrong password & Valid email + wrong password & ``Invalid email or password'' alert & Pass\\
+\addlinespace
+TC-06 & Login with unknown email & Unregistered email & ``No account found'' alert & Pass\\
+\addlinespace
+TC-07 & Password reset & Tap Forgot password + email & Reset e-mail received from Firebase & Pass\\
+\addlinespace
+TC-08 & AI chat normal question & ``Explain CPM in 3 lines'' & Streamed answer within 3\,s; typing indicator shows & Pass\\
+\addlinespace
+TC-09 & AI chat empty message & Tap send with empty input & Send disabled / no request & Pass\\
+\addlinespace
+TC-10 & AI chat under rate limit & 15 rapid consecutive questions & Retries succeed; eventual answer or 503 toast & Pass\\
+\addlinespace
+TC-11 & PDF pick + summarize & 2.1\,MB lecture PDF & Structured summary with all six sections & Pass\\
+\addlinespace
+TC-12 & PDF over 10\,MB & 14\,MB file & Rejected with clear size message & Pass\\
+\addlinespace
+TC-13 & PDF none selected & Tap Summarize with no file & ``PDF file is required'' error & Pass\\
+\addlinespace
+TC-14 & Quiz generation valid & Topic ``Risk management'', 10 Q, medium & 10 questions, 4 options each, index answers & Pass\\
+\addlinespace
+TC-15 & Quiz empty topic & Empty topic field & ``Topic is required'' error & Pass\\
+\addlinespace
+TC-16 & Quiz malformed model output & (Injected invalid JSON during dev) & Server 500 with retry advice; app stays stable & Pass\\
+\addlinespace
+TC-17 & Quiz answering flow & Answer all questions & Correct/incorrect colors, explanations, final score & Pass\\
+\addlinespace
+TC-18 & Note create & Title + content, Save & Note appears in list; survives app restart & Pass\\
+\addlinespace
+TC-19 & Note edit & Change content, Update & Card updated; toast confirms & Pass\\
+\addlinespace
+TC-20 & Note delete & Delete + confirm & Confirmation dialog; note removed & Pass\\
+\addlinespace
+TC-21 & Note search & Keyword in title/body & Filtered list; clear button resets & Pass\\
+\addlinespace
+TC-22 & Planner add session & Subject, date, duration & Session listed under correct date & Pass\\
+\addlinespace
+TC-23 & Planner missing fields & Empty subject & Field-specific alert & Pass\\
+\addlinespace
+TC-24 & Toggle completion & Tap circle on a session & Completed state persists; dashboard \% updates & Pass\\
+\addlinespace
+TC-25 & Dashboard progress math & 1 of 3 sessions completed & Progress shows 33\%, 1 completed, 2 remaining & Pass\\
+\addlinespace
+TC-26 & Sign out & Confirm sign out & Returns to login; reopening app stays signed out & Pass\\
+\addlinespace
+TC-27 & Session persistence & Close app while logged in & Still logged in; data intact on relaunch & Pass\\
+\addlinespace
+TC-28 & Per-user data isolation & Second account on same device & Cannot see first account's notes/sessions & Pass\\
+\addlinespace
+TC-29 & Backend health check & \texttt{GET /} & \{``message'': ``StudyMate AI backend is running!''\} & Pass\\
+\addlinespace
+TC-30 & Backend offline handling & Stop backend, use AI features & Friendly connection error; no crash & Pass\\
+\end{longtable}
+
+\section{Test Summary}
+\begin{table}[H]
+\centering
+\caption{Testing summary statistics.}
+\label{tab:testsummary}
+\small
+\begin{tabular}{lc}
+\toprule
+\textbf{Metric} & \textbf{Value}\\
+\midrule
+Test cases designed & 30\\
+Test cases passed (first run, W12) & 26\\
+Defects found & 6\\
+Defects fixed and verified & 6\\
+Final pass rate & \textbf{30/30 (100\%)}\\
+Open defects at release & 0\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Representative defects found during W12: two quiz-rendering crashes caused by
+explanations missing from model output (fixed by treating \texttt{explanation} as
+optional both server-side and client-side), one layout overflow on small screens in
+the planner (fixed with scrollable container), and one race condition between the
+dashboard progress and planner writes (fixed by re-reading storage in
+\texttt{useFocusEffect}).
+
+% ======================================================================
+% inlined from sections/ch07-results.tex
+% ======================================================================
+% =====================================================================
+%  CHAPTER 7 -- RESULTS AND DISCUSSION
+% =====================================================================
+\chapter{Results and Discussion}\label{ch:results}
+
+\section{Achieved Results}
+At the end of the project (September 30, 2026) every \emph{Must-have} requirement of
+Table~\ref{tab:fr} was implemented and verified:
+
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Authentication.} Registration, login, password reset, and persistent sessions work through Firebase; per-user data isolation was verified (TC-28).
+  \item \textbf{AI Chat.} Streaming answers appear in under three seconds on the university network; the retry policy absorbed all observed Gemini rate limits without user-visible failures after Sprint 2.
+  \item \textbf{PDF Summarization.} Tested with 24 lecture PDFs (0.3--9.6\,MB) from three courses; summaries consistently contained all six requested sections and were judged ``exam-useful'' by four of five UAT participants.
+  \item \textbf{Quiz Generation.} Generated over 120 quizzes during testing; server-side validation rejected 2 malformed model outputs, which were transparently regenerated. Average generation time: 4.8\,s for 10 questions.
+  \item \textbf{Notes \& Planner.} CRUD plus search work reliably; dashboard progress stays consistent with planner state (TC-24/TC-25).
+  \item \textbf{Schedule adherence.} All milestones of Figure~\ref{fig:gantt} were met; the final release coincides with the planned date (September 30, 2026). Effort finished at 320 person-hours against a 320 person-hour plan (2.5\% estimation error including contingency usage of zero).
+\end{itemize}
+
+\section{Discussion}
+The iterative life cycle proved appropriate: the quiz JSON contract was rewritten once
+after Sprint 3 feedback (the model initially returned markdown-fenced answers), and
+the streaming endpoint replaced an earlier non-streaming design after Sprint 2
+demonstrations --- both changes would have been expensive under a waterfall plan.
+The critical-path plan was tight by design; in practice, float activities (notes,
+planner, backend core) absorbed roughly four days of delays caused by emulator
+networking issues, confirming the value of scheduling parallel non-critical work.
+
+The most effective management practices were the weekly risk review, server-side
+schema validation as a risk response to R3, and the ``demo or it did not happen''
+sprint rule.
+
+\section{Limitations}
+\begin{itemize}[leftmargin=*]
+  \item Notes and plans live only on the device (AsyncStorage); uninstalling the app removes them (risk R6, accepted for this release).
+  \item A single LLM provider (Gemini) is supported; provider failure equals feature downtime even with retries.
+  \item The web build of the Expo client was not part of the test matrix; Android was the reference platform.
+  \item The Gemini key, although kept server-side, is a plain environment secret; a production system would use a secret manager and per-user quotas.
+\end{itemize}
+
+% ======================================================================
+% inlined from sections/ch08-conclusion.tex
+% ======================================================================
+% =====================================================================
+%  CHAPTER 8 -- CONCLUSION AND FUTURE WORK
+% =====================================================================
+\chapter{Conclusion and Future Work}\label{ch:conclusion}
+
+\section{Conclusion}
+The StudyMate AI project delivered, in thirteen weeks, an authenticated mobile study
+companion unifying conversational help, PDF summarization, self-assessment quizzes,
+note taking, and study planning. The final product provides Firebase-backed accounts,
+a streaming Gemini chat assistant, six-section PDF summaries, configurable
+multiple-choice quizzes with instant feedback, searchable per-user notes, and a
+planner whose progress appears on a personalized dashboard.
+
+Equally important, the project was \emph{managed}, not just coded: a documented WBS, a
+Gantt schedule with six milestones, a critical-path analysis matching the 88-day
+window exactly, an effort estimate accurate to 2.5\%, and a risk register whose top
+risk (API rate limiting) was mitigated in code before it affected users. All 30
+system test cases pass at release, and the product was delivered on the planned
+date, September 30, 2026.
+
+\section{Future Work}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Cloud synchronization} of notes and plans (Firestore) with offline support, closing accepted risk R6.
+  \item \textbf{Spaced-repetition quiz mode} that re-schedules incorrectly answered questions automatically.
+  \item \textbf{Voice input and audio summaries} for hands-free study sessions.
+  \item \textbf{Multi-model resilience}: a fallback LLM provider behind the same backend contract.
+  \item \textbf{Analytics dashboard} with weekly study-time trends and streaks.
+  \item \textbf{Public release} on Google Play with a privacy policy and production secret management.
+\end{itemize}
+
+
+% ======================================================================
+% inlined from sections/references.tex
+% ======================================================================
+% =====================================================================
+%  REFERENCES
+% =====================================================================
+\addcontentsline{toc}{chapter}{References}
+\begin{thebibliography}{99}
+\small
+
+\bibitem{expo}
+Expo Documentation, ``Expo Developer Platform,'' 2026.
+\url{https://docs.expo.dev} (accessed September 2026).
+
+\bibitem{rn}
+React Native, ``A framework for building native apps using React,'' 2026.
+\url{https://reactnative.dev/docs/getting-started} (accessed July 2026).
+
+\bibitem{firebase}
+Google Firebase, ``Firebase Authentication documentation,'' 2026.
+\url{https://firebase.google.com/docs/auth} (accessed July 2026).
+
+\bibitem{gemini}
+Google for Developers, ``Google Gemini API documentation (@google/genai),'' 2026.
+\url{https://ai.google.dev/gemini-api/docs} (accessed August 2026).
+
+\bibitem{express}
+Express.js, ``Express --- Node.js web application framework,'' 2026.
+\url{https://expressjs.com} (accessed July 2026).
+
+\bibitem{asyncstorage}
+React Native Async Storage, ``AsyncStorage documentation,'' 2026.
+\url{https://react-native-async-storage.github.io/async-storage} (accessed August 2026).
+
+\bibitem{sommerville}
+I. Sommerville, \emph{Software Engineering}, 10th ed. Pearson, 2016.
+
+\bibitem{pressman}
+R. S. Pressman and B. R. Maxim, \emph{Software Engineering: A Practitioner's Approach}, 9th ed. McGraw-Hill, 2020.
+
+\bibitem{pmbok}
+Project Management Institute, \emph{A Guide to the Project Management Body of Knowledge (PMBOK Guide)}, 7th ed. PMI, 2021.
+
+\bibitem{agile}
+K. Beck et al., ``Manifesto for Agile Software Development,'' 2001.
+\url{https://agilemanifesto.org} (accessed July 2026).
+
+\bibitem{cpm}
+M. R. Kelley, ``Critical path planning,'' in \emph{Proc. of the Eastern Joint Computer Conference}, 1959 --- as summarized in Pressman \cite{pressman}, ch. 3.
+
+\bibitem{tikz}
+T. Tantau, ``TikZ and PGF --- Graphics for \LaTeX{},'' CTAN, 2023.
+\url{https://ctan.org/pkg/pgf} (used for all diagrams in this report).
+
+\bibitem{gantt}
+M. Skala, ``pgfgantt --- Draw Gantt charts with \LaTeX{},'' CTAN, 2023.
+\url{https://ctan.org/pkg/pgfgantt}.
+
+\end{thebibliography}
+
+% ======================================================================
+% inlined from sections/appendix.tex
+% ======================================================================
+% =====================================================================
+%  APPENDICES
+% =====================================================================
+\appendix
+
+\chapter{Sprint Activity Log}\label{app:log}
+Table~\ref{tab:sprintlog} records who did what in each sprint.
+
+\begin{table}[H]
+\centering
+\caption{Work distribution per sprint.}
+\label{tab:sprintlog}
+\small
+\begin{tabular}{p{2.6cm}p{5.8cm}p{5.8cm}}
+\toprule
+\textbf{Sprint / Phase} & \textbf{Abdullah Al Fahad} & \textbf{Sanjit Sharif}\\
+\midrule
+W1 Inception & Requirement interviews, survey & Feasibility study, SRS drafting\\
+W2 Planning & Wireframes, UI style guide & Gantt/CPM planning, risk register\\
+Sprint 1 (W3--4) & Welcome/Login/Register screens, Firebase wiring & Repository setup, CI scripts, auth backend rules\\
+Sprint 2 (W5--6) & Chat UI, streaming renderer, typing indicator & Express server, Gemini integration, retry policy, \texttt{/chat}\\
+Sprint 3 (W7--8) & PDF screen, quiz setup/taking/result screens & \texttt{/summarize-pdf}, \texttt{/generate-quiz}, schema validation\\
+Sprint 4 (W9--10) & Notes UI, planner UI, dashboard polish & Storage key design, planner logic\\
+Sprint 5 (W11) & Explore/About screen, iconography & Integration bug fixing, Explore screen backend review\\
+W12 Testing & Test execution (auth/notes/planner/UI) & System test execution (chat/PDF/quiz/API)\\
+W13 Release & Report writing, diagram drawing & UAT coordination, final build\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\chapter{API Payload Examples}\label{app:api}
+
+\section*{Quiz generation request}
+\begin{lstlisting}[language={},basicstyle=\ttfamily\footnotesize,numbers=none,backgroundcolor=\color{codebg},frame=single,rulecolor=\color{codeframe}]
+POST /generate-quiz
+Content-Type: application/json
+
+{
+  "topic": "Critical Path Method",
+  "numberOfQuestions": 10,
+  "difficulty": "medium"
+}
+\end{lstlisting}
+
+\section*{Quiz generation response (validated schema)}
+\begin{lstlisting}[language={},basicstyle=\ttfamily\footnotesize,numbers=none,backgroundcolor=\color{codebg},frame=single,rulecolor=\color{codeframe}]
+{
+  "topic": "Critical Path Method",
+  "difficulty": "medium",
+  "questions": [
+    {
+      "question": "The critical path is the ...",
+      "options": [
+        "shortest sequence of activities",
+        "longest sequence of dependent activities",
+        "cheapest sequence of activities",
+        "least risky sequence of activities"
+      ],
+      "correctAnswer": 1,
+      "explanation": "CPM defines the critical path as the longest chain of dependent activities, which determines the project duration."
+    }
+  ]
+}
+\end{lstlisting}
+
+\section*{PDF summarization request/response}
+\begin{lstlisting}[language={},basicstyle=\ttfamily\footnotesize,numbers=none,backgroundcolor=\color{codebg},frame=single,rulecolor=\color{codeframe}]
+POST /summarize-pdf          (multipart/form-data, field "pdf", <= 10 MB)
+
+200 OK
+{
+  "fileName": "lecture-09-scheduling.pdf",
+  "summary": "Main Topic\n...\nKey Points\n- ...\nDefinitions\n- ...\n..."
+}
+\end{lstlisting}
+
+\section*{Chat request}
+\begin{lstlisting}[language={},basicstyle=\ttfamily\footnotesize,numbers=none,backgroundcolor=\color{codebg},frame=single,rulecolor=\color{codeframe}]
+POST /chat
+Content-Type: application/json
+
+{ "message": "Explain earned value analysis in simple words." }
+
+200 OK  (Content-Type: text/plain, streamed chunks)
+\end{lstlisting}
+
+\chapter{Glossary}\label{app:glossary}
+\begin{description}[leftmargin=4.2cm,style=nextline]
+  \item[CPM] Critical Path Method --- network scheduling technique that identifies the longest chain of dependent activities.
+  \item[Gantt chart] Bar-chart view of the project schedule over time.
+  \item[LLM] Large Language Model --- AI model that generates natural-language text (here: Google Gemini).
+  \item[MCQ] Multiple-choice question.
+  \item[MoSCoW] Prioritization scheme: Must / Should / Could / Won't have.
+  \item[SRS] Software Requirements Specification.
+  \item[Streaming] Server sends response incrementally as it is produced.
+  \item[UAT] User Acceptance Testing.
+  \item[WBS] Work Breakdown Structure --- hierarchical decomposition of project work.
+\end{description}
+
+
+\end{document}
