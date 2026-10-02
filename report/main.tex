@@ -535,6 +535,8 @@ Study Planner   & Add sessions with subject, date and duration; mark them done o
                   undo; delete them; view progress & Study Planner \\
 Data privacy    & Notes and sessions are isolated per account using the Firebase
                   user ID & All \\
+About Us        & Read the application description and view the development team
+                  with student IDs & Explore tab \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -953,7 +955,7 @@ matrix, Table~\ref{tab:alloc}.}
 
 Table~\ref{tab:fr} lists the twenty-two functional requirements (FR-01 to FR-22) elicited from the project brief. Every one of them is carried forward through design, implementation and testing in the traceability matrix of Table~\ref{tab:rtm}.
 
-\begin{longtable}{@{}p{1.5cm}p{4.6cm}p{6.4cm}p{2.1cm}@{}}
+\begin{longtable}{@{}p{1.5cm}p{4.6cm}p{6.3cm}p{2.1cm}@{}}
 \caption{Functional requirements} \label{tab:fr} \\
 \toprule
 \rowcolor{tblhead} \textcolor{white}{\textbf{ID}} &
@@ -1555,7 +1557,7 @@ stored under the session key for a single study session.
 
 \section{Screen Navigation Design}
 
-Figure~\ref{fig:nav} shows the navigation graph that Expo Router derives from the file system. The authentication screens sit on the root stack; the four tab destinations persist across the session; the remaining feature screens are pushed onto the stack and popped by the back affordance.
+Figure~\ref{fig:nav} shows the navigation graph that Expo Router derives from the file system. The authentication screens sit on the root stack; the tab group exposes two destinations, Home (the dashboard) and Explore (the About Us page), which persist across the session; the remaining feature screens are pushed onto the stack and popped by the back affordance.
 
 \begin{figure}[H]
 \centering
@@ -1578,6 +1580,7 @@ Figure~\ref{fig:nav} shows the navigation graph that Expo Router derives from th
 \node[scr] (quiz) at (12.9,0.0) {AI Quiz\\ \normalfont\tiny /quiz};
 \node[scr] (note) at (12.9,-1.3){Notes\\ \normalfont\tiny /notes};
 \node[prot] (plan) at (12.9,-2.6){Study Planner\\ \normalfont\tiny /study-planner};
+\node[prot] (abt)  at (8.3,-2.6) {About Us\\ \normalfont\tiny /(tabs)/explore};
 
 \draw[nav] (wel) -- node[nl, midway, above] {Get Started} (log);
 \draw[nav] (log) -- node[nl, midway, left] {Register link} (reg);
@@ -1590,13 +1593,16 @@ Figure~\ref{fig:nav} shows the navigation graph that Expo Router derives from th
 \draw[nav] (dash.east) -- (quiz.west);
 \draw[nav] (dash.east |- -1.3) -- (note.west);
 \draw[nav] (dash.south east) -- node[nl, midway, below, sloped] {push} (plan.west);
+\draw[nav] (dash.south) -- node[nl, midway, right] {Explore tab} (abt.north);
+\draw[back] (abt.west) -- node[nl, midway, above] {Home tab} (dash.south west);
 
 \draw[back] (chat.east) -- ++(0.7,0) |- node[nl, pos=0.78, right] {back} (dash.east |- 0.55);
 \end{tikzpicture}
 \caption{Screen navigation graph. Solid arrows are forward navigation
 (\texttt{router.push} / \texttt{router.replace}); dashed red arrows are returns
 (\texttt{router.back()} and sign-out). All five feature screens return to the
-dashboard, which triggers a data refresh.}
+dashboard, which triggers a data refresh. The Home and Explore tabs switch
+inside the tab group without leaving it.}
 \label{fig:nav}
 \end{figure}
 
@@ -2023,13 +2029,9 @@ reproduced in Appendix~C.
 
 \section{Home Dashboard}
 
-\screenfig{dashboard-top.png}{5.6cm}{Dashboard header with personalised greeting, initials avatar, online indicator and sign-out control.}{dash-top}
+\screenfig{dashboard-top.png}{5.6cm}{Dashboard header with personalised greeting, initials avatar, online indicator, sign-out control and the ``Today's Progress'' card with percentage ring, progress bar and completed/remaining counters.}{dash-top}
 
-\screenfig{dashboard-progress.png}{5.6cm}{``Today's Progress'' card with percentage ring, progress bar and completed/remaining counters.}{dash-progress}
-
-\screenfig{dashboard-tools.png}{5.6cm}{Smart Study Tools grid (AI Chat, PDF Summary, AI Quiz, My Notes) and the Study Planner banner.}{dash-tools}
-
-\screenfig{dashboard-stats.png}{5.6cm}{Study Overview statistics and the daily AI tip card.}{dash-stats}
+\screenfig{dashboard-tools.png}{5.6cm}{Smart Study Tools grid (AI Chat, PDF Summary, AI Quiz, My Notes), the Study Planner banner, the Your Study Overview statistics and the daily AI tip card.}{dash-tools}
 
 \section{AI Features}
 
@@ -2054,6 +2056,14 @@ reproduced in Appendix~C.
 \screenfig{planner-sessions.png}{5.6cm}{Planner session list with completed styling and Done/Undo controls.}{planner-sessions}
 
 \screenfig{logout-dialog.png}{5.6cm}{Sign-out confirmation dialog.}{logout}
+
+% =====================================================================
+\section{About Us Screen (Explore Tab)}
+
+\screenfig{about-screen.png}{5.6cm}{About Us screen on the Explore tab: application
+description, the two-member development team with student IDs, and the technology
+credit card. This page complements the nine core screens counted in
+Objective~SO-1.}{about}
 
 % =====================================================================
 \chapter{Testing and Quality Assurance}\label{ch:test}
@@ -2593,7 +2603,7 @@ Error codes         & 400 invalid input, 500 malformed model output, 503 model u
 
 Upload the following files into an \texttt{images/} folder in the Overleaf project.
 Each placeholder in Chapter~\ref{ch:ui} is replaced automatically once the matching
-file exists. Table~\ref{tab:images} lists all nineteen files with the content each one
+file exists. Table~\ref{tab:images} lists all eighteen files with the content each one
 must capture.
 
 \begin{table}[H]
@@ -2607,25 +2617,24 @@ must capture.
 \textcolor{white}{\textbf{File name}} &
 \textcolor{white}{\textbf{Content to capture}} \\
 \midrule
-1  & \texttt{seu-logo.png}            & University logo (cover page) \\
-2  & \texttt{welcome-screen.png}      & Welcome / Get Started screen \\
-3  & \texttt{login-screen.png}        & Login screen \\
-4  & \texttt{register-screen.png}     & Registration screen \\
+1  & \texttt{seu-logo.png} & University logo (cover page) \\
+2  & \texttt{welcome-screen.png} & Welcome / Get Started screen \\
+3  & \texttt{login-screen.png} & Login screen \\
+4  & \texttt{register-screen.png} & Registration screen \\
 5  & \texttt{forgot-password-alert.png} & Password-reset confirmation \\
-6  & \texttt{dashboard-top.png}       & Dashboard header with greeting and avatar \\
-7  & \texttt{dashboard-progress.png}  & Today's Progress card \\
-8  & \texttt{dashboard-tools.png}     & Study tools grid and planner banner \\
-9  & \texttt{dashboard-stats.png}     & Study overview statistics and tip card \\
-10 & \texttt{ai-chat-screen.png}      & AI chat with a question and answer \\
-11 & \texttt{pdf-summary-screen.png}  & PDF summariser with a generated summary \\
-12 & \texttt{quiz-setup.png}          & Quiz setup form \\
-13 & \texttt{quiz-question.png}       & Question with a marked answer and explanation \\
-14 & \texttt{quiz-result.png}         & Final score screen \\
-15 & \texttt{notes-list.png}          & Notes list with several notes \\
-16 & \texttt{notes-editor.png}        & Note editor open \\
-17 & \texttt{planner-add.png}         & Planner progress and add-session form \\
-18 & \texttt{planner-sessions.png}    & Session list with completed items \\
-19 & \texttt{logout-dialog.png}       & Sign-out confirmation dialog \\
+6  & \texttt{dashboard-top.png} & Dashboard header, greeting and Today's Progress card \\
+7  & \texttt{dashboard-tools.png} & Tools grid, planner banner and study overview \\
+8  & \texttt{about-screen.png} & About Us / team screen (Explore tab) \\
+9  & \texttt{ai-chat-screen.png} & AI chat with a question and answer \\
+10 & \texttt{pdf-summary-screen.png} & PDF summariser with a generated summary \\
+11 & \texttt{quiz-setup.png} & Quiz setup form \\
+12 & \texttt{quiz-question.png} & Question with a marked answer and options \\
+13 & \texttt{quiz-result.png} & Final score screen \\
+14 & \texttt{notes-list.png} & Notes list (or the empty state) \\
+15 & \texttt{notes-editor.png} & Note editor open \\
+16 & \texttt{planner-add.png} & Planner progress and add-session form \\
+17 & \texttt{planner-sessions.png} & Session list with completed items \\
+18 & \texttt{logout-dialog.png} & Sign-out confirmation dialog \\
 \bottomrule
 \end{tabularx}
 \end{table}
