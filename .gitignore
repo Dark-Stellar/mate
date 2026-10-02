@@ -13,3 +13,16 @@ npm
 
 expo-env.d.ts
 # @end expo-cli
+# LaTeX build artifacts (report/) - keep the source and the PDF, ignore the rest
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.lol
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
